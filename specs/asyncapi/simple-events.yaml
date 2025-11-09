@@ -1,0 +1,153 @@
+asyncapi: 3.0.0
+info:
+  title: Simple Event Stream
+  version: 1.0.0
+  description: Minimal AsyncAPI 3.0 spec for testing
+
+channels:
+  orderCreated:
+    address: orders.created
+    messages:
+      OrderCreated:
+        $ref: '#/components/messages/OrderCreated'
+
+  orderUpdated:
+    address: orders.updated
+    messages:
+      OrderUpdated:
+        $ref: '#/components/messages/OrderUpdated'
+
+operations:
+  publishOrderCreated:
+    action: send
+    channel:
+      $ref: '#/channels/orderCreated'
+    summary: Publish order created event
+    description: Emit this event when a new order is created
+    messages:
+      - $ref: '#/channels/orderCreated/messages/OrderCreated'
+
+  subscribeOrderCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/orderCreated'
+    summary: Subscribe to order created events
+    description: Listen for new order events
+    messages:
+      - $ref: '#/channels/orderCreated/messages/OrderCreated'
+
+  publishOrderUpdated:
+    action: send
+    channel:
+      $ref: '#/channels/orderUpdated'
+    summary: Publish order updated event
+    messages:
+      - $ref: '#/channels/orderUpdated/messages/OrderUpdated'
+
+  subscribeOrderUpdated:
+    action: receive
+    channel:
+      $ref: '#/channels/orderUpdated'
+    summary: Subscribe to order updated events
+    messages:
+      - $ref: '#/channels/orderUpdated/messages/OrderUpdated'
+
+components:
+  messages:
+    OrderCreated:
+      name: OrderCreated
+      title: Order Created Event
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - orderId
+          - userId
+          - total
+        properties:
+          orderId:
+            type: string
+            description: Unique order identifier
+          userId:
+            type: string
+            description: User who created the order
+          total:
+            type: number
+            description: Total order amount
+          items:
+            type: array
+            items:
+              type: object
+              properties:
+                productId:
+                  type: string
+                quantity:
+                  type: integer
+      examples:
+        - name: NewOrderExample
+          summary: Example of a new order being created
+          payload:
+            orderId: "order-abc-123"
+            userId: "user-456"
+            total: 172.97
+            items:
+              - productId: "prod-123"
+                quantity: 1
+              - productId: "prod-456"
+                quantity: 2
+        - name: MultiItemOrderExample
+          summary: Example of order with multiple different items
+          payload:
+            orderId: "order-xyz-789"
+            userId: "user-789"
+            total: 245.96
+            items:
+              - productId: "prod-789"
+                quantity: 1
+              - productId: "prod-101"
+                quantity: 3
+              - productId: "prod-456"
+                quantity: 2
+
+    OrderUpdated:
+      name: OrderUpdated
+      title: Order Updated Event
+      contentType: application/json
+      payload:
+        type: object
+        required:
+          - orderId
+          - status
+        properties:
+          orderId:
+            type: string
+          status:
+            type: string
+            enum: [pending, confirmed, shipped, delivered]
+          updatedAt:
+            type: string
+            format: date-time
+            description: Timestamp of the status update
+          trackingNumber:
+            type: string
+            description: Shipping tracking number (only present when status is shipped)
+      examples:
+        - name: OrderShippedExample
+          summary: Example of order status changing to shipped
+          payload:
+            orderId: "order-abc-123"
+            status: "shipped"
+            updatedAt: "2025-11-09T14:30:00Z"
+            trackingNumber: "TRACK-1234567890"
+        - name: OrderDeliveredExample
+          summary: Example of order being delivered
+          payload:
+            orderId: "order-xyz-789"
+            status: "delivered"
+            updatedAt: "2025-11-09T16:45:00Z"
+        - name: OrderConfirmedExample
+          summary: Example of order being confirmed
+          payload:
+            orderId: "order-def-456"
+            status: "confirmed"
+            updatedAt: "2025-11-09T10:15:00Z"
