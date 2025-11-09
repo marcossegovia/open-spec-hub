@@ -14,6 +14,7 @@
 - **Playwright Strict Mode**: Generic selectors like `getByText('orderId')` match multiple elements - must use specific CSS class-based selectors
 - **Port Conflicts**: Dev server fails if port 3000 is already in use - always run cleanup before starting
 - **Example Data Extraction**: AsyncAPI parser returns payload data directly from `payload()` method, not wrapped in `_json`
+- **Function Serialization**: Next.js cannot serialize functions passed to client components - must call functions to get values, not pass function references
 
 ### Best Practices Discovered
 - **Port Cleanup**: Always run `lsof -ti:3000 -sTCP:LISTEN | xargs kill -9` before `npm run dev`
@@ -330,6 +331,44 @@
 
 **Issues/Blockers**:
 - None encountered
+
+---
+
+## 2025-11-09 19:30 - AsyncAPI Avro Schema Implementation
+
+**Customer Request**: "Use the above summary generated from your last session to resume from where you left off."
+
+**Duration**: ~45 minutes
+
+**Files Modified**:
+- `package.json` - Added @asyncapi/avro-schema-parser dependency
+- `lib/parsers/asyncapi-parser.ts` - Registered Avro schema parser with main parser
+- `lib/loaders/spec-loader.ts` - Removed fallback parsing logic (no longer needed)
+
+**Implementation Details**:
+- Installed proper AsyncAPI Avro schema parser package instead of using fallback approach
+- Registered AvroSchemaParser() with main AsyncAPI parser in both parseAsyncAPISpec() and parseAsyncAPIString()
+- Removed complex fallback parsing logic from spec loader
+- Fixed function serialization errors that were causing Next.js build failures
+- Existing Avro normalization logic worked perfectly with proper parser
+
+**Testing Results**:
+- ✅ Build successful with 13 static operation pages (9 total operations: 4 REST + 5 AsyncAPI)
+- ✅ Avro operation accessible at /operations/onUserSignedUp
+- ✅ Avro schema properly parsed with correct type mapping:
+  - int → integer (with min/max validation)
+  - long → integer (with min/max validation)  
+  - string → string
+  - boolean → boolean
+  - map → object
+  - array → array
+- ✅ Field documentation preserved (Avro doc fields)
+- ✅ Required fields correctly identified
+- ✅ Example payload displays correctly
+- ✅ UI integration seamless (operation appears in lists and detail pages)
+
+**Key Learning**:
+Using official @asyncapi/avro-schema-parser is much cleaner than implementing fallback parsing. The AsyncAPI parser architecture supports plugin-based schema parsers - register them properly instead of working around parser limitations. Existing normalization logic was already robust enough to handle Avro schemas once the parser could understand them.
 
 ---
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { UnifiedOperation, UnifiedContract, getActionTypeColor } from '@/lib/normalization/unified-model';
+import { UnifiedOperation, UnifiedContract } from '@/lib/normalization/unified-model';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 

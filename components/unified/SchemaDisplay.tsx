@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import { Copy, Check } from 'lucide-react';
 import { UnifiedDataSchema } from '@/lib/normalization/unified-model';
 import DataSchema from './DataSchema';
@@ -42,12 +43,10 @@ export function SchemaDisplay({ schema, title, theme = 'light' }: SchemaDisplayP
 
   return (
     <div className="space-y-4">
-      {/* Header with title and tab buttons */}
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">{title}</h3>
 
-        {/* Tab buttons - only show if originalSchema exists */}
-        {schema.originalSchema && (
+        {schema.originalSchema != null && (
           <div className="flex gap-2">
             <button
               onClick={() => setActiveTab('schema')}
@@ -75,19 +74,17 @@ export function SchemaDisplay({ schema, title, theme = 'light' }: SchemaDisplayP
         )}
       </div>
 
-      {/* Tab content */}
       {activeTab === 'schema' && (
         <div className="border rounded-lg p-4">
           <DataSchema schema={schema} />
         </div>
       )}
 
-      {activeTab === 'original' && schema.originalSchema && (
+      {activeTab === 'original' && schema.originalSchema != null && (
         <div className="space-y-2">
-          {/* Schema format badge and copy button */}
           <div className="flex items-center justify-between">
             <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
-              {schema.schemaFormat === 'avro' ? 'Avro Schema' : 'JSON Schema'}
+              {schema.schemaFormat === 'avro' ? '🟣 Avro Schema' : '🔷 JSON Schema'}
             </span>
             <button
               onClick={copyOriginalSchema}

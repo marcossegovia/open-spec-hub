@@ -46,9 +46,16 @@ export default function DataSchema({ schema, level = 0, hideRootExample = false 
   if (schema.type === 'object' && schema.properties) {
     return (
       <div className="space-y-3">
-        {schema.name && (
-          <div className="font-semibold text-sm">{schema.name}</div>
-        )}
+        <div className="flex items-center gap-2 flex-wrap">
+          {schema.name && (
+            <div className="font-semibold text-sm">{schema.name}</div>
+          )}
+          {schema.schemaFormat === 'avro' && (
+            <Badge variant="secondary" className="text-xs">
+              Avro Record
+            </Badge>
+          )}
+        </div>
         {schema.description && (
           <p className="text-sm text-muted-foreground">{schema.description}</p>
         )}
@@ -60,6 +67,7 @@ export default function DataSchema({ schema, level = 0, hideRootExample = false 
               property={prop}
               required={schema.required?.includes(propName)}
               level={level}
+              isAvro={schema.schemaFormat === 'avro'}
             />
           ))}
         </div>
@@ -142,12 +150,14 @@ function SchemaPropertyView({
   name,
   property,
   required,
-  level
+  level,
+  isAvro = false
 }: {
   name: string;
   property: SchemaProperty;
   required?: boolean;
   level: number;
+  isAvro?: boolean;
 }) {
   const hasNested = property.type === 'object' && property.properties;
   const isArray = property.type === 'array' && property.items;
@@ -168,6 +178,11 @@ function SchemaPropertyView({
           <Badge variant="outline" className="text-xs font-mono">
             {property.type}
           </Badge>
+          {isAvro && (
+            <Badge variant="secondary" className="text-xs">
+              Avro
+            </Badge>
+          )}
           {property.format && (
             <Badge variant="secondary" className="text-xs">
               {property.format}
@@ -179,6 +194,13 @@ function SchemaPropertyView({
       {/* Description */}
       {property.description && (
         <p className="text-sm text-muted-foreground">{property.description}</p>
+      )}
+
+      {/* Special handling for Avro maps */}
+      {isAvro && property.type === 'object' && !property.properties && (
+        <div className="text-xs text-muted-foreground">
+          <span>🗺️ Map structure (key-value pairs)</span>
+        </div>
       )}
 
       {/* Enum */}

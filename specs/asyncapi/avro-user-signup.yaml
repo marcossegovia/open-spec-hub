@@ -1,0 +1,104 @@
+asyncapi: 3.0.0
+info:
+  title: User Signup API with Avro
+  version: 1.0.0
+  description: The API notifies you whenever a new user signs up in the application using Avro schemas.
+  tags:
+    - name: Users
+      description: User-related events and operations
+    - name: Authentication
+      description: Authentication and signup events
+    - name: Kafka
+      description: Kafka-based messaging
+
+servers:
+  kafkaServer:
+    host: test.mykafkacluster.org:8092
+    description: Kafka Server
+    protocol: kafka
+
+channels:
+  userSignedUp:
+    description: This channel contains a message per each user who signs up in our application.
+    address: user_signedup
+    messages:
+      userSignedUp:
+        $ref: '#/components/messages/userSignedUp'
+    tags:
+      - name: Users
+        description: User-related events and operations
+      - name: Authentication
+        description: Authentication and signup events
+
+operations:
+  onUserSignedUp:
+    action: receive
+    channel:
+      $ref: '#/channels/userSignedUp'
+    summary: Subscribe to user signup events
+    description: Listen for new user signup events
+    messages:
+      - $ref: '#/channels/userSignedUp/messages/userSignedUp'
+    tags:
+      - name: Users
+        description: User-related events and operations
+      - name: Authentication
+        description: Authentication and signup events
+      - name: Kafka
+        description: Kafka-based messaging
+
+components:
+  messages:
+    userSignedUp:
+      name: userSignedUp
+      title: User Signed Up Event
+      contentType: application/json
+      payload:
+        schemaFormat: 'application/vnd.apache.avro;version=1.9.0'
+        schema:
+          type: record
+          name: UserSignedUp
+          namespace: com.company
+          doc: User sign-up information
+          fields:
+            - name: userId
+              type: int
+              doc: Unique identifier for the user
+            - name: userEmail
+              type: string
+              doc: Email address of the user
+            - name: userName
+              type: string
+              doc: Display name of the user
+            - name: signupTimestamp
+              type: long
+              doc: Unix timestamp of when the user signed up
+            - name: isActive
+              type: boolean
+              doc: Whether the user account is active
+            - name: preferences
+              type:
+                type: map
+                values: string
+              doc: User preferences as key-value pairs
+            - name: roles
+              type:
+                type: array
+                items: string
+              doc: List of user roles
+      examples:
+        - name: NewUserExample
+          summary: Example of a new user signing up
+          payload:
+            userId: 12345
+            userEmail: "john.doe@example.com"
+            userName: "John Doe"
+            signupTimestamp: 1699224000000
+            isActive: true
+            preferences:
+              theme: "dark"
+              notifications: "enabled"
+              language: "en"
+            roles:
+              - "user"
+              - "reader"

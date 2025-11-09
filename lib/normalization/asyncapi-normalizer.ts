@@ -200,15 +200,12 @@ function normalizeAsyncAPIMessage(messageSchema: any): UnifiedDataSchema {
 
   // Detect schema format (Avro vs JSON Schema)
   const schemaFormat = messageSchema.schemaFormat || 'default';
-  const isAvro = schemaFormat.includes('avro');
+  const isAvro = typeof schemaFormat === 'string' && schemaFormat.includes('avro');
 
   // Preserve original schema for "Original Schema" tab
   // Clean AsyncAPI parser metadata (x-parser-* fields) before storing
   const rawSchema = payload._json || payload;
   const originalSchema = cleanParserMetadata(rawSchema);
-
-  // Check if payload has type() method or type property
-  const payloadType = typeof payload.type === 'function' ? payload.type() : (payload.type || 'object');
 
   // Extract example from the first example if present
   let example: unknown = undefined;
@@ -227,6 +224,14 @@ function normalizeAsyncAPIMessage(messageSchema: any): UnifiedDataSchema {
   // Extract namespace for Avro schemas
   const namespace = isAvro && originalSchema?.namespace ? originalSchema.namespace : undefined;
 
+  // Handle Avro schemas differently
+  if (isAvro) {
+    return normalizeAvroSchema(originalSchema, messageSchema, example, namespace);
+  }
+
+  // Handle JSON Schema (existing logic)
+  const payloadType = typeof payload.type === 'function' ? payload.type() : (payload.type || 'object');
+
   return {
     name: messageSchema.name || messageSchema.title,
     description: messageSchema.summary,
@@ -236,9 +241,141 @@ function normalizeAsyncAPIMessage(messageSchema: any): UnifiedDataSchema {
     required: payload.required ? payload.required() : undefined,
     example: example,
     originalSchema: originalSchema,
-    schemaFormat: isAvro ? 'avro' : 'json-schema',
+    schemaFormat: 'json-schema',
     metadata: namespace ? { namespace } : undefined,
   };
+}
+
+/**
+ * Normalize Avro schema to unified data schema
+ */
+function normalizeAvroSchema(
+  avroSchema: any,
+  messageSchema: any,
+  example?: unknown,
+  namespace?: string
+): UnifiedDataSchema {
+  // Handle Avro record type
+  if (avroSchema.type === 'record') {
+    const properties: Record<string, SchemaProperty> = {};
+    const required: string[] = [];
+
+    // Process Avro fields
+    if (avroSchema.fields && Array.isArray(avroSchema.fields)) {
+      avroSchema.fields.forEach((field: any) => {
+        properties[field.name] = normalizeAvroField(field);
+        // In Avro, all fields in a record are required by default unless they have a default value
+        if (field.default === undefined) {
+          required.push(field.name);
+        }
+      });
+    }
+
+    return {
+      name: avroSchema.name || messageSchema.name || messageSchema.title,
+      description: avroSchema.doc || messageSchema.summary,
+      type: 'object',
+      contentType: messageSchema.contentType || 'application/json',
+      properties,
+      required: required.length > 0 ? required : undefined,
+      example,
+      originalSchema: avroSchema,
+      schemaFormat: 'avro',
+      metadata: namespace ? { namespace } : undefined,
+    };
+  }
+
+  // Handle other Avro types (primitive, array, map, etc.)
+  return {
+    name: messageSchema.name || messageSchema.title,
+    description: messageSchema.summary,
+    type: mapAvroTypeToUnified(avroSchema.type || 'string'),
+    contentType: messageSchema.contentType || 'application/json',
+    example,
+    originalSchema: avroSchema,
+    schemaFormat: 'avro',
+    metadata: namespace ? { namespace } : undefined,
+  };
+}
+
+/**
+ * Normalize an individual Avro field to SchemaProperty
+ */
+function normalizeAvroField(field: any): SchemaProperty {
+  const property: SchemaProperty = {
+    type: mapAvroTypeToUnified(field.type),
+    description: field.doc,
+  };
+
+  // Handle complex Avro types
+  if (typeof field.type === 'object') {
+    if (field.type.type === 'array') {
+      property.type = 'array';
+      property.items = {
+        type: mapAvroTypeToUnified(field.type.items),
+        description: field.type.doc,
+      };
+    } else if (field.type.type === 'map') {
+      property.type = 'object';
+      // For maps, we'll indicate it's a key-value structure
+      property.description = field.doc || `Map with ${field.type.values} values`;
+    } else if (field.type.type === 'record') {
+      property.type = 'object';
+      property.properties = {};
+      if (field.type.fields) {
+        field.type.fields.forEach((nestedField: any) => {
+          property.properties![nestedField.name] = normalizeAvroField(nestedField);
+        });
+      }
+    }
+  }
+
+  // Handle union types (Avro unions)
+  if (Array.isArray(field.type)) {
+    // For unions, we'll use the first non-null type as the primary type
+    const nonNullTypes = field.type.filter((t: any) => t !== 'null');
+    if (nonNullTypes.length > 0) {
+      const primaryType = typeof nonNullTypes[0] === 'string' ? nonNullTypes[0] : nonNullTypes[0].type;
+      property.type = mapAvroTypeToUnified(primaryType);
+    }
+  }
+
+  return property;
+}
+
+/**
+ * Map Avro types to unified schema types
+ */
+function mapAvroTypeToUnified(avroType: string | any): string {
+  if (typeof avroType === 'string') {
+    switch (avroType) {
+      case 'int':
+      case 'long':
+        return 'integer';
+      case 'float':
+      case 'double':
+        return 'number';
+      case 'bytes':
+        return 'string'; // Bytes are typically represented as base64 strings
+      case 'null':
+        return 'null';
+      case 'boolean':
+      case 'string':
+      case 'array':
+      case 'map':
+      case 'record':
+        return avroType;
+      default:
+        return 'string'; // Default fallback
+    }
+  }
+
+  // Handle complex type objects
+  if (typeof avroType === 'object' && avroType.type) {
+    return mapAvroTypeToUnified(avroType.type);
+  }
+
+  return 'string'; // Ultimate fallback
 }
 
 /**

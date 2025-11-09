@@ -88,6 +88,7 @@ Example workflow:
 - Manual: Use main page at `/` to verify parsing
 - UI: Use Playwright MCP for all frontend changes
 - Phase 2: All parsers/normalizers tested with example specs
+- **Test Cleanup**: Always clean test artifacts after runs: `rm -rf test-results/ playwright-report/`
 
 ## Common Commands
 ```bash
@@ -98,6 +99,9 @@ npm run lint
 
 # Cleanup ports
 lsof -ti:3000 -sTCP:LISTEN | xargs kill -9 2>/dev/null || true
+
+# Cleanup test artifacts
+rm -rf test-results/ playwright-report/
 ```
 
 ## Reference Docs
