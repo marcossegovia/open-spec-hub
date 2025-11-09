@@ -4,6 +4,8 @@ import { loadAllSpecs } from '@/lib/loaders/spec-loader';
 import OperationDetail from '@/components/unified/OperationDetail';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import ThemeToggleWrapper from '@/components/theme-toggle-wrapper';
+import { UnifiedContract, UnifiedOperation } from '@/lib/normalization/unified-model';
 
 interface PageProps {
   params: {
@@ -17,7 +19,7 @@ export default async function OperationPage({ params }: PageProps) {
   // Load all contracts
   const contracts = await loadAllSpecs();
 
-  // Find the operation across all contracts
+  // Find operation across all contracts
   let foundOperation = null;
   let foundContract = null;
 
@@ -39,12 +41,17 @@ export default async function OperationPage({ params }: PageProps) {
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       {/* Breadcrumb and Back Button */}
       <div className="mb-6 space-y-4">
-        <Link href="/">
-          <Button variant="ghost" size="sm" className="gap-2">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Operations
-          </Button>
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link href="/">
+            <Button variant="ghost" size="sm" className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Operations
+            </Button>
+          </Link>
+          <div className="w-32">
+            <ThemeToggleWrapper />
+          </div>
+        </div>
 
         <nav className="text-sm text-muted-foreground" aria-label="Breadcrumb">
           <ol className="flex items-center gap-2">

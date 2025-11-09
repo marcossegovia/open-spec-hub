@@ -140,6 +140,7 @@ export function extractAsyncAPIOperations(document: ParsedAsyncAPISpec) {
     messages: any[];
     summary?: string;
     description?: string;
+    tags?: any[];
   }> = [];
 
   if (!operations) {
@@ -150,11 +151,12 @@ export function extractAsyncAPIOperations(document: ParsedAsyncAPISpec) {
     const op = operation as any;
 
     // Skip internal AsyncAPI parser properties
-    if (!op._json || !op.id) {
+    if (!op._json || id === 'collections' || id === '_meta') {
       continue;
     }
 
-    const actualId = op.id();
+    // Use the x-parser-unique-object-id as the operation ID
+    const actualId = op._json['x-parser-unique-object-id'] || op.id() || id;
 
     // Get channel - use _json.channel.address if available
     let channel = op.channel ? op.channel() : null;
@@ -170,6 +172,7 @@ export function extractAsyncAPIOperations(document: ParsedAsyncAPISpec) {
       messages: op.messages ? Array.from(op.messages()) : [],
       summary: op.summary ? op.summary() : undefined,
       description: op.description ? op.description() : undefined,
+      tags: op.tags ? op.tags() : undefined,
     });
   }
 

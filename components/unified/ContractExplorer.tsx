@@ -13,6 +13,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import Sidebar from './Sidebar';
+import ThemeToggle from '@/components/theme-toggle';
 
 interface ContractExplorerProps {
   contracts: UnifiedContract[];
@@ -49,11 +50,18 @@ export default function ContractExplorer({ contracts }: ContractExplorerProps) {
       {/* Header */}
       <div className="border-b">
         <div className="px-4 py-6">
-          <h1 className="text-3xl font-bold mb-2">API Contract Explorer</h1>
-          <p className="text-muted-foreground">
-            Unified view of all operations across {contracts.length} contract{contracts.length !== 1 ? 's' : ''}
-            {' '}({allOperations.length} operation{allOperations.length !== 1 ? 's' : ''})
-          </p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">API Contract Explorer</h1>
+              <p className="text-muted-foreground">
+                Unified view of all operations across {contracts.length} contract{contracts.length !== 1 ? 's' : ''}
+                {' '}({allOperations.length} operation{allOperations.length !== 1 ? 's' : ''})
+              </p>
+            </div>
+            <div className="w-32">
+              <ThemeToggle />
+            </div>
+          </div>
         </div>
       </div>
 

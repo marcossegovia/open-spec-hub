@@ -14,7 +14,7 @@ import {
   SchemaProperty,
   ContractTag,
   ServerInfo,
-} from './unified-model';
+} from './unified-model.js';
 import {
   ParsedAsyncAPISpec,
   extractAsyncAPIInfo,
@@ -97,11 +97,39 @@ function normalizeAsyncAPIOperation(
   const input = operation.action === 'send' ? dataSchema : undefined;
   const output = operation.action === 'receive' ? (dataSchema ? [dataSchema] : []) : [];
 
-  // Extract tags from channel or operation
+  // Extract tags from operation tags
   const tags: string[] = [];
+  
+  // Try different methods to extract operation tags
+  if (operation.tags) {
+    try {
+      const operationTags = Array.from(operation.tags);
+      tags.push(...operationTags.map((t: any) => t.name ? t.name() : (typeof t === 'string' ? t : t.name)));
+    } catch (e) {
+      // Fallback to direct access if tags() method doesn't exist
+      if (operation._json?.tags) {
+        const operationTags = operation._json.tags;
+        if (Array.isArray(operationTags)) {
+          tags.push(...operationTags.map((t: any) => typeof t === 'string' ? t : t.name));
+        }
+      }
+    }
+  }
+
+  // Extract tags from channel tags
   if (channel?.tags) {
-    const channelTags = Array.from(channel.tags());
-    tags.push(...channelTags.map((t: any) => t.name()));
+    try {
+      const channelTags = Array.from(channel.tags());
+      tags.push(...channelTags.map((t: any) => t.name()));
+    } catch (e) {
+      // Fallback to direct access if tags() method doesn't exist
+      if (channel._json?.tags) {
+        const channelTags = channel._json.tags;
+        if (Array.isArray(channelTags)) {
+          tags.push(...channelTags.map((t: any) => typeof t === 'string' ? t : t.name));
+        }
+      }
+    }
   }
 
   // Get bindings for protocol-specific details

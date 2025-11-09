@@ -2,8 +2,10 @@
 
 ## Critical Workflow Rules
 
-### 0. WIP.md Synchronization
-**ALWAYS update `.claude/WIP.md` after completing ANY task:**
+### 0. Documentation Synchronization
+**ALWAYS update both `.claude/WIP.md` and `.claude/ITERATIONS.md` after completing ANY task:**
+
+**WIP.md Updates:**
 - Update task status (✅ COMPLETE / ❌ NOT STARTED / ⚠️ IN PROGRESS)
 - Update "Last Updated" date to current session date
 - Update "Current Phase" and "Next Phase" sections
@@ -11,7 +13,15 @@
 - Add any new discoveries, blockers, or technical decisions
 - Keep "Session Status" section accurate
 
-**WIP.md is the SOURCE OF TRUTH** - keep it synchronized with actual progress.
+**ITERATIONS.md Updates:**
+- Add new iteration entry with current date (YYYY-MM-DD format)
+- Document session focus and achievements
+- List all files modified during session
+- Record testing results and verification outcomes
+- Note next steps for following session
+- Document any issues or blockers encountered
+
+**WIP.md is the SOURCE OF TRUTH** - keep both files synchronized with actual progress.
 
 ### 1. Dev Server Management
 **ALWAYS clean up existing dev servers before starting a new one:**

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Copy, Check } from 'lucide-react';
 import DataSchema from './DataSchema';
 import CodeExamples from './CodeExamples';
+import { useTheme } from '@/components/theme-provider';
 
 // Import highlight.js for syntax highlighting
 import hljs from 'highlight.js';
@@ -42,12 +43,37 @@ const patternLabels: Record<string, string> = {
 };
 
 export default function OperationDetail({ operation, contract }: OperationDetailProps) {
+  const { resolvedTheme } = useTheme();
   const [copiedExample, setCopiedExample] = useState<string | null>(null);
   const hasInput = !!operation.input;
   const hasOutput = operation.output && operation.output.length > 0;
   const hasParameters = operation.parameters.length > 0;
 
-  // Apply syntax highlighting when component mounts
+  // Manage highlight.js theme CSS for JSON examples
+  useEffect(() => {
+    const updateHighlightTheme = () => {
+      const existingThemeLink = document.querySelector('link[data-highlight-theme-json]');
+      if (existingThemeLink) {
+        existingThemeLink.remove();
+      }
+
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.setAttribute('data-highlight-theme-json', 'true');
+      
+      if (resolvedTheme === 'dark') {
+        link.href = 'https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/an-old-hope.css';
+      } else {
+        link.href = 'https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/vs.css';
+      }
+      
+      document.head.appendChild(link);
+    };
+
+    updateHighlightTheme();
+  }, [resolvedTheme]);
+
+  // Apply syntax highlighting when component mounts or theme changes
   useEffect(() => {
     const codeBlocks = document.querySelectorAll('pre code');
     codeBlocks.forEach((block) => {
@@ -55,7 +81,7 @@ export default function OperationDetail({ operation, contract }: OperationDetail
         hljs.highlightElement(block);
       }
     });
-  }, []);
+  }, [resolvedTheme]);
 
   // Handle copying examples with icon feedback
   const handleCopyExample = async (example: any, type: string) => {

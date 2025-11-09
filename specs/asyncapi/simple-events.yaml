@@ -3,6 +3,15 @@ info:
   title: Simple Event Stream
   version: 1.0.0
   description: Minimal AsyncAPI 3.0 spec for testing
+  tags:
+    - name: Orders
+      description: Order-related events and operations
+    - name: Events
+      description: Event-driven operations
+    - name: E-commerce
+      description: E-commerce business domain
+    - name: Critical
+      description: Critical business operations
 
 channels:
   orderCreated:
@@ -10,12 +19,28 @@ channels:
     messages:
       OrderCreated:
         $ref: '#/components/messages/OrderCreated'
+    tags:
+      - name: Orders
+        description: Order-related events and operations
+      - name: Events
+        description: Event-driven operations
+      - name: E-commerce
+        description: E-commerce business domain
+      - name: Critical
+        description: Critical business operations
 
   orderUpdated:
     address: orders.updated
     messages:
       OrderUpdated:
         $ref: '#/components/messages/OrderUpdated'
+    tags:
+      - name: Orders
+        description: Order-related events and operations
+      - name: Events
+        description: Event-driven operations
+      - name: E-commerce
+        description: E-commerce business domain
 
 operations:
   publishOrderCreated:
@@ -26,6 +51,15 @@ operations:
     description: Emit this event when a new order is created
     messages:
       - $ref: '#/channels/orderCreated/messages/OrderCreated'
+    tags:
+      - name: Orders
+        description: Order-related events and operations
+      - name: Events
+        description: Event-driven operations
+      - name: E-commerce
+        description: E-commerce business domain
+      - name: Critical
+        description: Critical business operations
 
   subscribeOrderCreated:
     action: receive
@@ -35,22 +69,47 @@ operations:
     description: Listen for new order events
     messages:
       - $ref: '#/channels/orderCreated/messages/OrderCreated'
+    tags:
+      - name: Orders
+        description: Order-related events and operations
+      - name: Events
+        description: Event-driven operations
+      - name: E-commerce
+        description: E-commerce business domain
 
   publishOrderUpdated:
     action: send
     channel:
       $ref: '#/channels/orderUpdated'
     summary: Publish order updated event
+    description: Emit this event when an order status changes
     messages:
       - $ref: '#/channels/orderUpdated/messages/OrderUpdated'
+    tags:
+      - name: Orders
+        description: Order-related events and operations
+      - name: Events
+        description: Event-driven operations
+      - name: E-commerce
+        description: E-commerce business domain
+      - name: Critical
+        description: Critical business operations
 
   subscribeOrderUpdated:
     action: receive
     channel:
       $ref: '#/channels/orderUpdated'
     summary: Subscribe to order updated events
+    description: Listen for order status change events
     messages:
       - $ref: '#/channels/orderUpdated/messages/OrderUpdated'
+    tags:
+      - name: Orders
+        description: Order-related events and operations
+      - name: Events
+        description: Event-driven operations
+      - name: E-commerce
+        description: E-commerce business domain
 
 components:
   messages:

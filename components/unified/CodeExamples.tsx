@@ -7,13 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Copy, Check } from 'lucide-react';
 import { generateCodeExample, CodeLanguage } from '@/lib/utils/code-generator';
+import { useTheme } from '@/components/theme-provider';
 
 // Import highlight.js for syntax highlighting
 import hljs from 'highlight.js';
 import javascript from 'highlight.js/lib/languages/javascript';
 import python from 'highlight.js/lib/languages/python';
 import bash from 'highlight.js/lib/languages/bash';
-import 'highlight.js/styles/github-dark.css';
 
 // Register languages
 hljs.registerLanguage('javascript', javascript);
@@ -26,6 +26,7 @@ interface CodeExamplesProps {
 }
 
 export default function CodeExamples({ operation, contract }: CodeExamplesProps) {
+  const { resolvedTheme } = useTheme();
   const isREST = operation.metadata.protocol === 'openapi';
 
   // Available languages based on protocol
@@ -45,7 +46,31 @@ export default function CodeExamples({ operation, contract }: CodeExamplesProps)
 
   const code = generateCodeExample(operation, contract, selectedLanguage);
 
-  // Apply syntax highlighting when code or language changes
+  // Manage highlight.js theme CSS classes
+  useEffect(() => {
+    const updateHighlightTheme = () => {
+      const existingThemeLink = document.querySelector('link[data-highlight-theme]');
+      if (existingThemeLink) {
+        existingThemeLink.remove();
+      }
+
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.setAttribute('data-highlight-theme', 'true');
+      
+      if (resolvedTheme === 'dark') {
+        link.href = 'https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/an-old-hope.css';
+      } else {
+        link.href = 'https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/vs.css';
+      }
+      
+      document.head.appendChild(link);
+    };
+
+    updateHighlightTheme();
+  }, [resolvedTheme]);
+
+  // Apply syntax highlighting when code, language, or theme changes
   useEffect(() => {
     // Small delay to ensure DOM is updated
     const timer = setTimeout(() => {
@@ -58,7 +83,7 @@ export default function CodeExamples({ operation, contract }: CodeExamplesProps)
     }, 10);
 
     return () => clearTimeout(timer);
-  }, [code, selectedLanguage]);
+  }, [code, selectedLanguage, resolvedTheme]);
 
   const handleCopy = async () => {
     try {
