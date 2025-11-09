@@ -234,10 +234,37 @@ function normalizePayloadProperties(payload: any): Record<string, SchemaProperty
     // Handle arrays
     if (schemaData.items) {
       const itemsData = schemaData.items._json || schemaData.items;
-      properties[propName].items = {
+      const arrayItem: any = {
         type: itemsData.type || 'string',
         description: itemsData.description,
       };
+
+      // If array items are objects with properties, recursively normalize them
+      if (itemsData.properties) {
+        arrayItem.properties = normalizePayloadProperties(itemsData);
+        if (itemsData.required) {
+          arrayItem.required = itemsData.required;
+        }
+      }
+
+      // Handle nested arrays within array items
+      if (itemsData.items) {
+        const nestedItemsData = itemsData.items._json || itemsData.items;
+        arrayItem.items = {
+          type: nestedItemsData.type || 'string',
+          description: nestedItemsData.description,
+        };
+
+        // Recursively handle nested object properties in nested arrays
+        if (nestedItemsData.properties) {
+          arrayItem.items.properties = normalizePayloadProperties(nestedItemsData);
+          if (nestedItemsData.required) {
+            arrayItem.items.required = nestedItemsData.required;
+          }
+        }
+      }
+
+      properties[propName].items = arrayItem;
     }
 
     // Validation

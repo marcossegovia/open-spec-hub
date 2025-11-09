@@ -161,16 +161,35 @@ test.describe('AsyncAPI Operation Detail Pages', () => {
   test('array items in message schema render correctly', async ({ page }) => {
     await page.goto('/operations/subscribeOrderCreated');
 
-    // Verify items property
-    await expect(page.getByText('items')).toBeVisible();
-    await expect(page.getByText('array')).toBeVisible();
+    // Verify items property (use more specific selector for property name)
+    await expect(page.locator('code.text-sm.font-semibold').filter({ hasText: 'items' }).first()).toBeVisible();
+    
+    // Verify array type badge for items property
+    await expect(page.locator('.font-mono').filter({ hasText: 'array' }).first()).toBeVisible();
 
     // Verify "Array items:" label
     await expect(page.getByText('Array items:')).toBeVisible();
 
-    // Verify item object properties
-    await expect(page.getByText('productId')).toBeVisible();
-    await expect(page.getByText('quantity')).toBeVisible();
+    // Verify item object properties within array items section (nested under border-l-2)
+    await expect(page.locator('.border-l-2').locator('code').filter({ hasText: 'productId' })).toBeVisible();
+    await expect(page.locator('.border-l-2').locator('code').filter({ hasText: 'quantity' })).toBeVisible();
+  });
+
+  test('array items render correctly in PUBLISH operation input schema', async ({ page }) => {
+    await page.goto('/operations/publishOrderCreated');
+
+    // Verify items property in Input section
+    await expect(page.locator('code.text-sm.font-semibold').filter({ hasText: 'items' }).first()).toBeVisible();
+    
+    // Verify array type badge
+    await expect(page.locator('.font-mono').filter({ hasText: 'array' }).first()).toBeVisible();
+
+    // Verify "Array items:" label
+    await expect(page.getByText('Array items:')).toBeVisible();
+
+    // Verify nested properties in array items
+    await expect(page.locator('.border-l-2').locator('code').filter({ hasText: 'productId' })).toBeVisible();
+    await expect(page.locator('.border-l-2').locator('code').filter({ hasText: 'quantity' })).toBeVisible();
   });
 
   test('back to operations button works from AsyncAPI page', async ({ page }) => {

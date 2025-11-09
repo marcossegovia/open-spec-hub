@@ -1,0 +1,132 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e2]
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - link "Back to Operations" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - button "Back to Operations" [ref=e7]:
+            - img [ref=e8]
+            - text: Back to Operations
+        - 'button "Current theme: System. Click to switch to Light theme" [ref=e11] [cursor=pointer]':
+          - img [ref=e13]
+          - generic [ref=e15]: System
+      - navigation "Breadcrumb" [ref=e16]:
+        - list [ref=e17]:
+          - listitem [ref=e18]:
+            - link "Home" [ref=e19] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e20]: /
+          - listitem [ref=e21]:
+            - link "All Operations" [ref=e22] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e23]: /
+          - listitem [ref=e24]: Subscribe to order created events
+    - generic [ref=e25]:
+      - generic [ref=e26]:
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - generic [ref=e31]: SUBSCRIBE
+            - generic "Publish/Subscribe" [ref=e32]: ⇉
+            - generic [ref=e33]: 🟣 Event
+          - heading "Subscribe to order created events" [level=3] [ref=e34]
+          - paragraph [ref=e35]: orders.created
+          - paragraph [ref=e36]: Listen for new order events
+          - generic [ref=e37]:
+            - generic [ref=e38]: Orders
+            - generic [ref=e39]: Events
+            - generic [ref=e40]: E-commerce
+        - generic [ref=e42]:
+          - generic [ref=e43]:
+            - generic [ref=e44]: "Contract:"
+            - generic [ref=e45]: Simple Event Stream
+            - generic [ref=e46]: v1.0.0
+          - paragraph [ref=e47]: Minimal AsyncAPI 3.0 spec for testing
+      - generic [ref=e48]:
+        - heading "Output" [level=3] [ref=e49]
+        - generic [ref=e50]:
+          - generic [ref=e52]:
+            - heading "OrderCreated" [level=3] [ref=e53]
+            - code [ref=e54]: application/json
+          - generic [ref=e55]:
+            - generic [ref=e56]:
+              - heading "Schema" [level=4] [ref=e57]
+              - generic [ref=e58]:
+                - generic [ref=e59]: OrderCreated
+                - generic [ref=e60]:
+                  - generic [ref=e61]:
+                    - generic [ref=e62]:
+                      - generic [ref=e63]:
+                        - code [ref=e64]: orderId
+                        - generic [ref=e65]: required
+                      - generic [ref=e67]: string
+                    - paragraph [ref=e68]: Unique order identifier
+                  - generic [ref=e69]:
+                    - generic [ref=e70]:
+                      - generic [ref=e71]:
+                        - code [ref=e72]: userId
+                        - generic [ref=e73]: required
+                      - generic [ref=e75]: string
+                    - paragraph [ref=e76]: User who created the order
+                  - generic [ref=e77]:
+                    - generic [ref=e78]:
+                      - generic [ref=e79]:
+                        - code [ref=e80]: total
+                        - generic [ref=e81]: required
+                      - generic [ref=e83]: number
+                    - paragraph [ref=e84]: Total order amount
+                  - generic [ref=e85]:
+                    - generic [ref=e86]:
+                      - code [ref=e88]: items
+                      - generic [ref=e90]: array
+                    - generic [ref=e91]:
+                      - generic [ref=e92]: "Array items:"
+                      - generic [ref=e93]:
+                        - generic [ref=e94]:
+                          - code [ref=e96]: item
+                          - generic [ref=e98]: object
+                        - generic [ref=e99]:
+                          - generic [ref=e101]:
+                            - code [ref=e103]: productId
+                            - generic [ref=e105]: string
+                          - generic [ref=e107]:
+                            - code [ref=e109]: quantity
+                            - generic [ref=e111]: integer
+            - generic [ref=e112]:
+              - generic [ref=e113]:
+                - heading "Example Response" [level=4] [ref=e114]
+                - button [ref=e115] [cursor=pointer]:
+                  - img [ref=e116]
+              - code [ref=e120]: "{ \"orderId\": \"order-abc-123\", \"userId\": \"user-456\", \"total\": 172.97, \"items\": [ { \"productId\": \"prod-123\", \"quantity\": 1 }, { \"productId\": \"prod-456\", \"quantity\": 2 } ] }"
+      - generic [ref=e121]:
+        - generic [ref=e123]:
+          - heading "💻 Code Examples" [level=3] [ref=e124]
+          - button [ref=e125] [cursor=pointer]:
+            - img [ref=e126]
+        - generic [ref=e129]:
+          - generic [ref=e130]:
+            - generic [ref=e131] [cursor=pointer]: JavaScript
+            - generic [ref=e132] [cursor=pointer]: Python
+          - code [ref=e135]:
+            - text: "const { Kafka } = require('kafkajs'); // Subscribe to order created events const kafka = new Kafka({ clientId: 'my-app', brokers: ['kafka.example.com:9092'] }); async function subscribeToEvents("
+            - text: ") { const consumer = kafka.consumer({ groupId: 'my-group' }); await consumer.connect(); await consumer.subscribe({ topic: 'orders.created', fromBeginning: false }); await consumer.run({ eachMessage: async ({ topic, partition, message }) => { const event = JSON.parse(message.value.toString()); console.log('Received event:', event); // Process your event here await processEvent(event); } }); } async function processEvent(event) { // Add your business logic here console.log('Processing:', event); } // Start subscriber: subscribeToEvents().catch(console.error);"
+          - paragraph [ref=e137]:
+            - text: This example shows how to subscribe to the
+            - strong [ref=e138]: orders.created
+            - text: channel. Update the broker URL and consumer group ID as needed.
+      - generic [ref=e139]:
+        - heading "Event Metadata" [level=3] [ref=e141]
+        - generic [ref=e142]:
+          - generic [ref=e143]:
+            - text: "Channel:"
+            - code [ref=e144]: orders.created
+          - generic [ref=e145]:
+            - text: "Action:"
+            - generic [ref=e146]: receive
+          - generic [ref=e147]:
+            - text: "Protocol Bindings:"
+            - generic [ref=e148]: "{}"
+```
