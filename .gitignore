@@ -7,7 +7,6 @@
 /coverage
 /test-results/
 /playwright-report/
-/test-results
 /.playwright-mcp/
 
 # Next.js
