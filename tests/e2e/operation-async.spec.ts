@@ -20,8 +20,8 @@ test.describe('AsyncAPI Operation Detail Pages', () => {
     await expect(page.getByText('SUBSCRIBE', { exact: true })).toBeVisible();
     await expect(page.getByText('⇉')).toBeVisible(); // Publish/Subscribe icon
 
-    // Verify channel address
-    await expect(page.getByText('orders.created')).toBeVisible();
+    // Verify channel address (use specific selector to avoid syntax highlighting matches)
+    await expect(page.locator('p.text-muted-foreground.font-mono').filter({ hasText: 'orders.created' })).toBeVisible();
 
     // Verify contract information
     await expect(page.getByText('Contract:')).toBeVisible();
@@ -50,11 +50,11 @@ test.describe('AsyncAPI Operation Detail Pages', () => {
     await expect(page.getByRole('heading', { name: 'OrderCreated' })).toBeVisible();
     await expect(page.getByText('application/json')).toBeVisible();
 
-    // Verify schema properties
-    await expect(page.getByText('orderId')).toBeVisible();
-    await expect(page.getByText('userId')).toBeVisible();
-    await expect(page.getByText('total')).toBeVisible();
-    await expect(page.getByText('items')).toBeVisible();
+    // Verify schema properties (use specific selectors to avoid strict mode violations)
+    await expect(page.locator('code.text-sm.font-semibold').filter({ hasText: 'orderId' })).toBeVisible();
+    await expect(page.locator('code.text-sm.font-semibold').filter({ hasText: 'userId' })).toBeVisible();
+    await expect(page.locator('code.text-sm.font-semibold').filter({ hasText: 'total' })).toBeVisible();
+    await expect(page.locator('code.text-sm.font-semibold').filter({ hasText: 'items' })).toBeVisible();
 
     // Verify required fields are marked
     await expect(page.getByText('required')).toHaveCount(3); // orderId, userId, total
@@ -67,10 +67,10 @@ test.describe('AsyncAPI Operation Detail Pages', () => {
     const inputHeadings = page.getByRole('heading', { name: /Input|Output/ });
     await expect(inputHeadings.first()).toBeVisible();
 
-    // Verify message schema properties
-    await expect(page.getByText('orderId')).toBeVisible();
-    await expect(page.getByText('userId')).toBeVisible();
-    await expect(page.getByText('total')).toBeVisible();
+    // Verify message schema properties (use specific selectors)
+    await expect(page.locator('code.text-sm.font-semibold').filter({ hasText: 'orderId' })).toBeVisible();
+    await expect(page.locator('code.text-sm.font-semibold').filter({ hasText: 'userId' })).toBeVisible();
+    await expect(page.locator('code.text-sm.font-semibold').filter({ hasText: 'total' })).toBeVisible();
   });
 
   test('SUBSCRIBE operation displays example message (NEW FEATURE)', async ({ page }) => {
@@ -93,7 +93,7 @@ test.describe('AsyncAPI Operation Detail Pages', () => {
     await expect(page.getByText(/"prod-456"/)).toBeVisible();
 
     // Verify copy button
-    const copyButtons = page.getByRole('button', { name: 'Copy' });
+    const copyButtons = page.locator('button').filter({ has: page.locator('svg.lucide-copy') });
     await expect(copyButtons).toHaveCount(2); // Example + Code examples
   });
 
@@ -101,11 +101,11 @@ test.describe('AsyncAPI Operation Detail Pages', () => {
     await page.goto('/operations/publishOrderCreated');
 
     // For PUBLISH, example should be in Input section
-    await expect(page.getByRole('heading', { name: /Example/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Example Request' })).toBeVisible();
 
-    // Verify example data exists
-    await expect(page.getByText(/"orderId":/)).toBeVisible();
-    await expect(page.getByText(/"order-abc-123"/)).toBeVisible();
+    // Verify example data exists (in Example Request section)
+    await expect(page.locator('div').filter({ hasText: 'Example Request' }).locator('pre.bg-muted').first().getByText(/"orderId":/)).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: 'Example Request' }).locator('pre.bg-muted').first().getByText(/"order-abc-123"/)).toBeVisible();
   });
 
   test('Event metadata section displays correctly', async ({ page }) => {
@@ -116,9 +116,9 @@ test.describe('AsyncAPI Operation Detail Pages', () => {
 
     // Verify metadata fields
     await expect(page.getByText('Channel:')).toBeVisible();
-    await expect(page.getByText('orders.created')).toBeVisible();
+    await expect(page.locator('p.text-muted-foreground.font-mono').filter({ hasText: 'orders.created' })).toBeVisible();
     await expect(page.getByText('Action:')).toBeVisible();
-    await expect(page.getByText('receive')).toBeVisible();
+    await expect(page.locator('div.inline-flex.items-center.rounded-full.border').filter({ hasText: 'receive' })).toBeVisible();
   });
 
   test('PUBLISH shows "send" action in metadata', async ({ page }) => {
@@ -127,7 +127,7 @@ test.describe('AsyncAPI Operation Detail Pages', () => {
     // Verify Event Metadata
     await expect(page.getByRole('heading', { name: 'Event Metadata' })).toBeVisible();
     await expect(page.getByText('Action:')).toBeVisible();
-    await expect(page.getByText('send')).toBeVisible(); // PUBLISH = send
+    await expect(page.locator('div.inline-flex.items-center.rounded-full.border').filter({ hasText: 'send' })).toBeVisible(); // PUBLISH = send
   });
 
   test('OrderUpdated operation displays with multiple examples', async ({ page }) => {
@@ -137,15 +137,15 @@ test.describe('AsyncAPI Operation Detail Pages', () => {
     await expect(page.getByRole('heading', { name: 'Subscribe to order updated events' })).toBeVisible();
 
     // Verify channel
-    await expect(page.getByText('orders.updated')).toBeVisible();
+    await expect(page.locator('p.text-muted-foreground.font-mono').filter({ hasText: 'orders.updated' })).toBeVisible();
 
     // Verify example exists (should use first example)
     await expect(page.getByRole('heading', { name: 'Example Response', level: 4 })).toBeVisible();
 
     // Verify example data (should be OrderShippedExample - the first one)
-    await expect(page.getByText(/"status":/)).toBeVisible();
-    await expect(page.getByText(/"shipped"/)).toBeVisible();
-    await expect(page.getByText(/"trackingNumber":/)).toBeVisible();
+    await expect(page.locator('pre.bg-muted').getByText(/"status":/)).toBeVisible();
+    await expect(page.locator('pre.bg-muted').getByText(/"shipped"/)).toBeVisible();
+    await expect(page.locator('pre.bg-muted').getByText(/"trackingNumber":/)).toBeVisible();
   });
 
   test('protocol badge shows Event for AsyncAPI', async ({ page }) => {
@@ -209,7 +209,7 @@ test.describe('AsyncAPI Operation Detail Pages', () => {
     await expect(page.getByRole('navigation', { name: 'Breadcrumb' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'All Operations' })).toBeVisible();
-    await expect(page.getByText('Publish order created event')).toBeVisible();
+    await expect(page.getByRole('navigation').getByText('Publish order created event')).toBeVisible();
   });
 
   test('message contentType displays correctly', async ({ page }) => {
@@ -223,9 +223,9 @@ test.describe('AsyncAPI Operation Detail Pages', () => {
     await page.goto('/operations/subscribeOrderUpdated');
 
     // Verify status field (has enum)
-    await expect(page.getByText('status')).toBeVisible();
+    await expect(page.locator('code.text-sm.font-semibold').filter({ hasText: 'status' })).toBeVisible();
 
     // Verify enum values are documented (may be in schema description)
-    await expect(page.getByText(/pending|confirmed|shipped|delivered/i)).toBeVisible();
+    await expect(page.locator('code.bg-muted').filter({ hasText: /pending|confirmed|shipped|delivered/i }).first()).toBeVisible();
   });
 });

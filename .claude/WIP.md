@@ -1,6 +1,6 @@
 # Work In Progress (WIP)
 
-**Last Updated**: 2025-11-09 (Current Session - AsyncAPI Tags Fixed & Working)
+**Last Updated**: 2025-11-09 (Current Session - AsyncAPI Test Pipeline Fixed)
 **Current Phase**: Phase 4 - Core Features Complete, Medium Priority Pending
 **Next Phase**: Phase 4 Medium Priority → Phase 5 Polish & Deployment
 
@@ -24,6 +24,8 @@
 - **Syntax Highlighting**: ✅ MIGRATED to highlight.js - Better performance, smaller bundle
 - **Dark/Light Mode Toggle**: ✅ COMPLETE - Full theme system with dynamic syntax highlighting
 - **AsyncAPI Tags**: ✅ COMPLETE - Tags properly extracted and displayed in UI
+- **AsyncAPI Array Items**: ✅ COMPLETE - Nested properties in array items now render correctly
+- **AsyncAPI Test Pipeline**: ✅ COMPLETE - All 16 AsyncAPI tests now passing (fixed strict mode violations)
 
 ## 🔄 How to Resume (Next Session)
 
