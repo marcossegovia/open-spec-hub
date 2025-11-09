@@ -6,7 +6,7 @@
 
 **https://marcossegovia.me/open-spec-hub**
 
-See it in action with our example e-commerce platform featuring both REST APIs and AsyncAPI event streams.
+See it in action with our example page featuring both REST APIs and AsyncAPI event streams.
 
 ## ✨ What is this?
 
