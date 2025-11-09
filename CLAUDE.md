@@ -33,7 +33,7 @@ Example workflow:
 ```
 1. Edit component
 2. Start dev server (after cleanup)
-3. Navigate to page: mcp__playwright__navigate(url: "http://localhost:3000/test")
+3. Navigate to page: mcp__playwright__navigate(url: "http://localhost:3000")
 4. Screenshot: mcp__playwright__screenshot(name: "test-page")
 5. Verify output
 ```
@@ -62,7 +62,7 @@ Example workflow:
 | output | Response | Subscribed message |
 
 ## Testing Strategy
-- Manual: Use test page at `/test` to verify parsing
+- Manual: Use main page at `/` to verify parsing
 - UI: Use Playwright MCP for all frontend changes
 - Phase 2: All parsers/normalizers tested with example specs
 

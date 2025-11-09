@@ -1,10 +1,20 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { UnifiedOperation, UnifiedContract } from '@/lib/normalization/unified-model';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Copy, Check } from 'lucide-react';
 import DataSchema from './DataSchema';
 import CodeExamples from './CodeExamples';
+
+// Import highlight.js for syntax highlighting
+import hljs from 'highlight.js';
+import javascript from 'highlight.js/lib/languages/javascript';
+
+// Register languages
+hljs.registerLanguage('javascript', javascript);
 
 interface OperationDetailProps {
   operation: UnifiedOperation;
@@ -32,9 +42,31 @@ const patternLabels: Record<string, string> = {
 };
 
 export default function OperationDetail({ operation, contract }: OperationDetailProps) {
+  const [copiedExample, setCopiedExample] = useState<string | null>(null);
   const hasInput = !!operation.input;
   const hasOutput = operation.output && operation.output.length > 0;
   const hasParameters = operation.parameters.length > 0;
+
+  // Apply syntax highlighting when component mounts
+  useEffect(() => {
+    const codeBlocks = document.querySelectorAll('pre code');
+    codeBlocks.forEach((block) => {
+      if (block instanceof HTMLElement) {
+        hljs.highlightElement(block);
+      }
+    });
+  }, []);
+
+  // Handle copying examples with icon feedback
+  const handleCopyExample = async (example: any, type: string) => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(example, null, 2));
+      setCopiedExample(type);
+      setTimeout(() => setCopiedExample(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -202,21 +234,25 @@ export default function OperationDetail({ operation, contract }: OperationDetail
               <h4 className="text-sm font-semibold mb-3">Schema</h4>
               <DataSchema schema={operation.input!} hideRootExample={true} />
             </div>
-            {operation.input!.example && (
+            {operation.input!.example !== undefined && (
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="text-sm font-semibold">Example Request</h4>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(JSON.stringify(operation.input!.example, null, 2));
-                    }}
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleCopyExample(operation.input!.example, 'request')}
+                    className="gap-2"
                   >
-                    Copy
-                  </button>
+                    {copiedExample === 'request' ? (
+                      <Check className="h-4 w-4" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                  </Button>
                 </div>
-                <pre className="text-xs bg-muted p-4 rounded-lg overflow-auto border">
-                  <code>{JSON.stringify(operation.input!.example, null, 2)}</code>
+                <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm" key={`request-${JSON.stringify(operation.input!.example).slice(0, 30)}`}>
+                  <code className="language-javascript">{JSON.stringify(operation.input!.example, null, 2)}</code>
                 </pre>
               </div>
             )}
@@ -253,21 +289,25 @@ export default function OperationDetail({ operation, contract }: OperationDetail
                   <h4 className="text-sm font-semibold mb-3">Schema</h4>
                   <DataSchema schema={output} hideRootExample={true} />
                 </div>
-                {output.example && (
+                {output.example !== undefined && (
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="text-sm font-semibold">Example Response</h4>
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(JSON.stringify(output.example, null, 2));
-                        }}
-                        className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleCopyExample(output.example, `response-${output.statusCode}`)}
+                        className="gap-2"
                       >
-                        Copy
-                      </button>
+                        {copiedExample === `response-${output.statusCode}` ? (
+                          <Check className="h-4 w-4" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
                     </div>
-                    <pre className="text-xs bg-muted p-4 rounded-lg overflow-auto border">
-                      <code>{JSON.stringify(output.example, null, 2)}</code>
+                    <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm" key={`response-${output.statusCode}-${JSON.stringify(output.example).slice(0, 30)}`}>
+                      <code className="language-javascript">{JSON.stringify(output.example, null, 2)}</code>
                     </pre>
                   </div>
                 )}

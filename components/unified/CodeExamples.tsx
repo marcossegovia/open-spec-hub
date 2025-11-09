@@ -8,12 +8,17 @@ import { Badge } from '@/components/ui/badge';
 import { Copy, Check } from 'lucide-react';
 import { generateCodeExample, CodeLanguage } from '@/lib/utils/code-generator';
 
-// Import Prism.js for syntax highlighting
-import Prism from 'prismjs';
-import 'prismjs/themes/prism-tomorrow.css';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-python';
-import 'prismjs/components/prism-bash';
+// Import highlight.js for syntax highlighting
+import hljs from 'highlight.js';
+import javascript from 'highlight.js/lib/languages/javascript';
+import python from 'highlight.js/lib/languages/python';
+import bash from 'highlight.js/lib/languages/bash';
+import 'highlight.js/styles/github-dark.css';
+
+// Register languages
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('python', python);
+hljs.registerLanguage('bash', bash);
 
 interface CodeExamplesProps {
   operation: UnifiedOperation;
@@ -42,7 +47,17 @@ export default function CodeExamples({ operation, contract }: CodeExamplesProps)
 
   // Apply syntax highlighting when code or language changes
   useEffect(() => {
-    Prism.highlightAll();
+    // Small delay to ensure DOM is updated
+    const timer = setTimeout(() => {
+      const codeBlocks = document.querySelectorAll('pre code');
+      codeBlocks.forEach((block) => {
+        if (block instanceof HTMLElement) {
+          hljs.highlightElement(block);
+        }
+      });
+    }, 10);
+
+    return () => clearTimeout(timer);
   }, [code, selectedLanguage]);
 
   const handleCopy = async () => {
@@ -91,7 +106,7 @@ export default function CodeExamples({ operation, contract }: CodeExamplesProps)
 
         {/* Code Block */}
         <div className="relative">
-          <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm">
+          <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm" key={`${selectedLanguage}-${code.slice(0, 50)}`}>
             <code className={`language-${selectedLanguage === 'curl' ? 'bash' : selectedLanguage}`}>
               {code}
             </code>
