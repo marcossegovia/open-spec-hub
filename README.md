@@ -1,110 +1,185 @@
-# Unified API Documentation Platform
+# Open Spec Hub
 
-A protocol-agnostic documentation platform that provides a centralized approach for documenting all types of API contracts through a common, intuitive UI.
+> A unified documentation platform for all your API specifications - REST, Events, and beyond.
 
-## Vision
+## 🚀 Live Demo
 
-Users shouldn't need to understand protocol differences to navigate and comprehend their API contracts. This platform normalizes different API paradigms (REST, event-driven, etc.) into a common conceptual model.
+**https://marcossegovia.me/open-spec-hub**
 
-## Current Status: Phase 2 in Progress
+See it in action with our example e-commerce platform featuring both REST APIs and AsyncAPI event streams.
 
-### ✅ Phase 1: Project Setup (Complete)
-- Next.js 14 with TypeScript and Tailwind CSS
-- shadcn/ui base components
-- Core dependencies installed
-- Project folder structure created
-- Example OpenAPI and AsyncAPI specs added
+## ✨ What is this?
 
-### 🚧 Phase 2: Multi-Protocol Parser & Normalization Layer (In Progress)
-- ✅ Unified model TypeScript interfaces defined
-- ✅ Spec detector (auto-detect OpenAPI vs AsyncAPI)
-- ✅ OpenAPI parser (swagger-parser integration)
-- ✅ AsyncAPI parser (@asyncapi/parser integration)
-- ✅ OpenAPI normalizer (REST → Unified Model)
-- ✅ AsyncAPI normalizer (Events → Unified Model)
-- ⏳ Utility functions for search and grouping
+Open Spec Hub is a **protocol-agnostic documentation platform** that lets you browse and understand all your API contracts through a single, intuitive interface. Whether you're working with REST APIs, event-driven architectures, or both - we handle the complexity so you don't have to.
 
-### 📋 Upcoming Phases
-- Phase 3: Unified Protocol-Agnostic UI
-- Phase 4: Static Site Generation
-- Phase 5: Polish & Deployment
+### 🎯 The Problem We Solve
 
-## Core Philosophy
+Your team probably uses multiple API protocols:
+- **REST APIs** for traditional request/response operations
+- **AsyncAPI** for event-driven architectures  
+- **GraphQL** for flexible data queries
+- **gRPC** for high-performance services
+
+Each has its own documentation format, tools, and terminology. **Open Spec Hub unifies them all.**
+
+## 🏗️ How It Works
 
 ### Protocol Abstraction
-The platform's primary value is **hiding protocol complexity**, not showcasing it. All API contracts are normalized into universal concepts:
+We translate different API protocols into a common conceptual model:
 
-- **Operation** - A unit of API interaction (REST endpoint or AsyncAPI channel operation)
-- **Input Data** - Data being sent (request body or published message)
-- **Output Data** - Data being received (response or subscribed message)
-- **Parameters** - Additional data (query params, headers, message headers)
-- **Communication Pattern** - Request/Response (sync) or Publish/Subscribe (async)
+| Universal Concept | REST (OpenAPI) | AsyncAPI | What You See |
+|-------------------|----------------|----------|--------------|
+| **Operation** | HTTP Endpoint | Channel Operation | Just "Operation" |
+| **Action** | GET, POST, PUT | Publish, Subscribe | Clear action badges |
+| **Location** | `/api/users` | `user.events` | Simple location path |
+| **Data In** | Request Body | Published Message | "Input Schema" |
+| **Data Out** | Response Body | Subscribed Message | "Output Schema" |
 
-### Unified Conceptual Model
+### Key Features
+- 🔍 **Unified Search** - Find anything across all your APIs
+- 📱 **Responsive Design** - Works on desktop and mobile
+- 🌙 **Dark Mode** - Built-in theme switching
+- 📋 **Code Examples** - Auto-generated samples in multiple languages
+- ⚡ **Static Site Generation** - Fast loading and SEO-friendly
+- 🧪 **Comprehensive Testing** - 82 E2E tests ensure reliability
 
-| Concept | REST (OpenAPI) | AsyncAPI | UI Display |
-|---------|----------------|----------|------------|
-| Operation | HTTP Endpoint | Channel Operation | "Operation" |
-| Action Type | HTTP Method (GET, POST) | Publish/Subscribe | Badge with action |
-| Location | URL Path | Channel Name | "Location" |
-| Input Data | Request Body | Published Message | "Input Schema" |
-| Output Data | Response Body | Subscribed Message | "Output Schema" |
+## 🚀 Quick Start
 
-## Project Structure
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
 
-```
-api-docs/
-├── app/                          # Next.js app router
-├── components/
-│   ├── ui/                       # shadcn base components
-│   ├── unified/                  # Protocol-agnostic components
-│   └── protocol-specific/        # Internal adapters
-├── lib/
-│   ├── parsers/                  # OpenAPI & AsyncAPI parsers
-│   ├── normalization/            # Protocol normalizers
-│   ├── generators/               # Code examples, SSG helpers
-│   └── utils.ts                  # Utilities
-├── specs/
-│   ├── openapi/                  # OpenAPI specs
-│   └── asyncapi/                 # AsyncAPI specs
-└── public/                       # Static assets
-```
-
-## Development
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/marcossegovia/open-spec-hub.git
+cd open-spec-hub
+
 # Install dependencies
 npm install
 
-# Run development server
+# Start development server
 npm run dev
-
-# Build for production
-npm run build
 ```
 
-## Example Specs
+Open [http://localhost:3000](http://localhost:3000) to see your API documentation hub.
 
-The project includes complete example specs for an e-commerce platform:
+### Adding Your Own APIs
 
-- **REST API** (`specs/openapi/ecommerce-api.yaml`): Products, Orders, Users
-- **Event Stream** (`specs/asyncapi/ecommerce-events.yaml`): Order events, Inventory updates, Notifications
+1. **Place your spec files** in the `specs/` directory:
+   ```
+   specs/
+   ├── openapi/
+   │   └── your-api.yaml
+   └── asyncapi/
+       └── your-events.yaml
+   ```
 
-These demonstrate how the platform handles mixed protocols for the same business domain.
+2. **Restart the dev server** - your APIs will automatically appear!
 
-## Design Principles
+3. **Build for production**:
+   ```bash
+   npm run build
+   ```
 
-1. **Protocol Abstraction First** - Hide complexity, don't showcase it
-2. **Consistent Terminology** - Never expose protocol-specific terms in primary UI
-3. **Progressive Disclosure** - Details when needed, not required for navigation
-4. **Single Source of Truth** - Unified model is canonical
-5. **Future-Proof** - Easy to add new protocols (GraphQL, gRPC)
+## 📁 Project Structure
 
-## License
+```
+open-spec-hub/
+├── app/                    # Next.js app router
+├── components/
+│   ├── ui/                # Reusable UI components (shadcn/ui)
+│   └── unified/           # Protocol-agnostic components
+├── lib/
+│   ├── parsers/           # OpenAPI & AsyncAPI parsers
+│   ├── normalization/     # Protocol → Unified model
+│   └── utils/             # Helper functions
+├── specs/                 # Your API specifications
+│   ├── openapi/          # REST API specs
+│   └── asyncapi/         # Event-driven specs
+└── public/               # Static assets
+```
 
-MIT
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run tests with UI
+npm run test:ui
+
+# Run tests in headed mode
+npm run test:headed
+```
+
+Our test suite includes 82 E2E tests covering:
+- Homepage functionality
+- REST API operations
+- AsyncAPI operations  
+- Code examples
+- Search and filtering
+
+## 🎨 Customization
+
+### Theming
+The platform uses Tailwind CSS with shadcn/ui components. Customize colors, fonts, and spacing in:
+- `tailwind.config.ts` - Design system configuration
+- `app/globals.css` - Global styles and CSS variables
+
+### Adding New Protocols
+Want to support GraphQL, gRPC, or other protocols? The architecture is designed for extensibility:
+
+1. **Create a parser** in `lib/parsers/`
+2. **Create a normalizer** in `lib/normalization/`
+3. **Update the spec detector** in `lib/parsers/spec-detector.ts`
+
+## 📚 Example APIs Included
+
+The repository comes with a complete e-commerce platform example:
+
+- **REST API** (`specs/openapi/ecommerce-api.yaml`)
+  - Product catalog
+  - Order management
+  - User authentication
+
+- **Event Streams** (`specs/asyncapi/simple-events.yaml`)
+  - User lifecycle events
+  - Order status updates
+  - Inventory notifications
+
+- **Avro Schema** (`specs/asyncapi/avro-user-signup.yaml`)
+  - User signup with Avro schema format
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+### Development Workflow
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+## 🔗 Links
+
+- **Live Demo**: https://marcossegovia.me/open-spec-hub
+- **Repository**: https://github.com/marcossegovia/open-spec-hub
+- **Issues**: https://github.com/marcossegovia/open-spec-hub/issues
 
 ---
 
-**Version**: 2.0.0 (Unified Protocol-Agnostic Edition)
-**Last Updated**: 2025-11-08
+<div align="center">
+
+**⭐ Star this repo if it helped you!**
+
+Made with ❤️ by [Marcos Segovia](https://github.com/marcossegovia)
+
+</div>

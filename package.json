@@ -1,7 +1,12 @@
 {
-  "name": "api-docs-platform",
+  "name": "open-spec-hub",
   "version": "1.0.0",
   "description": "Unified API Contract Documentation Platform",
+  "homepage": "https://marcossegovia.me/open-spec-hub",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcossegovia/open-spec-hub.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
