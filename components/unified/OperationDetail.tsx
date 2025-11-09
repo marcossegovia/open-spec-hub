@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Copy, Check } from 'lucide-react';
 import DataSchema from './DataSchema';
 import CodeExamples from './CodeExamples';
+import { SchemaDisplay } from './SchemaDisplay';
 import { useTheme } from '@/components/theme-provider';
 
 // Import highlight.js for syntax highlighting
@@ -245,7 +246,6 @@ export default function OperationDetail({ operation, contract }: OperationDetail
       {hasInput && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Input</CardTitle>
             <CardDescription>
               Data sent with this operation
               {operation.input!.contentType && (
@@ -256,10 +256,14 @@ export default function OperationDetail({ operation, contract }: OperationDetail
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div>
-              <h4 className="text-sm font-semibold mb-3">Schema</h4>
-              <DataSchema schema={operation.input!} hideRootExample={true} />
-            </div>
+            {/* Schema Display with tabs */}
+            <SchemaDisplay
+              schema={operation.input!}
+              title="Input Schema"
+              theme={resolvedTheme}
+            />
+
+            {/* Example Request - kept separate */}
             {operation.input!.example !== undefined && (
               <div>
                 <div className="flex items-center justify-between mb-2">
@@ -311,10 +315,14 @@ export default function OperationDetail({ operation, contract }: OperationDetail
                 )}
               </CardHeader>
               <CardContent className="space-y-4">
-                <div>
-                  <h4 className="text-sm font-semibold mb-3">Schema</h4>
-                  <DataSchema schema={output} hideRootExample={true} />
-                </div>
+                {/* Schema Display with tabs */}
+                <SchemaDisplay
+                  schema={output}
+                  title="Output Schema"
+                  theme={resolvedTheme}
+                />
+
+                {/* Example Response - kept separate */}
                 {output.example !== undefined && (
                   <div>
                     <div className="flex items-center justify-between mb-2">

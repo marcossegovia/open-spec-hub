@@ -200,6 +200,9 @@ function normalizeSchema(
     example: schema.example,
     enum: schema.enum,
     format: schema.format,
+    // Preserve original schema for "Original Schema" tab
+    originalSchema: schema,
+    schemaFormat: 'json-schema',
   };
 
   // Handle properties (for objects)

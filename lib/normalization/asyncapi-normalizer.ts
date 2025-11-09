@@ -5,6 +5,31 @@
  * This is where we abstract event-driven/messaging concepts into protocol-agnostic terms.
  */
 
+/**
+ * Remove AsyncAPI parser metadata fields (x-parser-*) from schema
+ * These are internal fields added by the parser and should not be shown to users
+ */
+function cleanParserMetadata(obj: any): any {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(cleanParserMetadata);
+  }
+
+  const cleaned: any = {};
+  for (const [key, value] of Object.entries(obj)) {
+    // Skip any property starting with 'x-parser-'
+    if (key.startsWith('x-parser-')) {
+      continue;
+    }
+    // Recursively clean nested objects
+    cleaned[key] = cleanParserMetadata(value);
+  }
+  return cleaned;
+}
+
 import {
   UnifiedContract,
   UnifiedOperation,
@@ -173,6 +198,15 @@ function normalizeAsyncAPIMessage(messageSchema: any): UnifiedDataSchema {
     };
   }
 
+  // Detect schema format (Avro vs JSON Schema)
+  const schemaFormat = messageSchema.schemaFormat || 'default';
+  const isAvro = schemaFormat.includes('avro');
+
+  // Preserve original schema for "Original Schema" tab
+  // Clean AsyncAPI parser metadata (x-parser-* fields) before storing
+  const rawSchema = payload._json || payload;
+  const originalSchema = cleanParserMetadata(rawSchema);
+
   // Check if payload has type() method or type property
   const payloadType = typeof payload.type === 'function' ? payload.type() : (payload.type || 'object');
 
@@ -190,6 +224,9 @@ function normalizeAsyncAPIMessage(messageSchema: any): UnifiedDataSchema {
     }
   }
 
+  // Extract namespace for Avro schemas
+  const namespace = isAvro && originalSchema?.namespace ? originalSchema.namespace : undefined;
+
   return {
     name: messageSchema.name || messageSchema.title,
     description: messageSchema.summary,
@@ -198,6 +235,9 @@ function normalizeAsyncAPIMessage(messageSchema: any): UnifiedDataSchema {
     properties: normalizePayloadProperties(payload),
     required: payload.required ? payload.required() : undefined,
     example: example,
+    originalSchema: originalSchema,
+    schemaFormat: isAvro ? 'avro' : 'json-schema',
+    metadata: namespace ? { namespace } : undefined,
   };
 }
 

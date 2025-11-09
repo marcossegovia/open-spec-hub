@@ -3,25 +3,38 @@
 ## Critical Workflow Rules
 
 ### 0. Documentation Synchronization
-**ALWAYS update both `.claude/WIP.md` and `.claude/ITERATIONS.md` after completing ANY task:**
+**CRITICAL: Update STATUS.md BEFORE, DURING, and AFTER tasks. NEVER wait until the end!**
 
-**WIP.md Updates:**
-- Update task status (✅ COMPLETE / ❌ NOT STARTED / ⚠️ IN PROGRESS)
-- Update "Last Updated" date to current session date
-- Update "Current Phase" and "Next Phase" sections
-- Document testing results and verification steps
-- Add any new discoveries, blockers, or technical decisions
-- Keep "Session Status" section accurate
+**BEFORE Starting a Task:**
+1. **Immediately update STATUS.md "🎯 RIGHT NOW" section:**
+   - Set "Working On" to the new task description
+   - Set "Status" to ⚠️ IN PROGRESS
+   - Document "Current Request" with exact user quote
+   - List planned subtasks if complex (use TodoWrite tool)
+2. This ensures if session dies, there's a record of what was being attempted
 
-**ITERATIONS.md Updates:**
-- Add new iteration entry with current date (YYYY-MM-DD format)
-- Document session focus and achievements
-- List all files modified during session
-- Record testing results and verification outcomes
-- Note next steps for following session
-- Document any issues or blockers encountered
+**DURING Task Execution:**
+1. **Keep STATUS.md updated as you progress:**
+   - Mark subtasks complete as you finish them
+   - Update "Completed" list with finished items
+   - Add any blockers or issues discovered
+2. **Use TodoWrite tool to track progress for complex tasks**
+3. This ensures if session dies mid-task, progress is not lost
 
-**WIP.md is the SOURCE OF TRUTH** - keep both files synchronized with actual progress.
+**AFTER Task Completion:**
+1. **Update STATUS.md:**
+   - Set "Status" to ✅ COMPLETE
+   - Update "Last Completed" with timestamp (YYYY-MM-DD HH:MM)
+   - Move completed feature to "✅ WHAT WORKS" section
+   - Update "🧪 TEST STATUS" if tests were added/modified
+2. **Update HISTORY.md (append-only, never edit old entries):**
+   - Add new session entry with timestamp (YYYY-MM-DD HH:MM format)
+   - Include: Customer request (exact quote), status, files modified, duration
+   - Record testing results and verification outcomes
+   - Update "📊 Key Learnings" if you discovered new patterns or made technical decisions
+
+**STATUS.md is the SOURCE OF TRUTH for current state.**
+**Never work without first documenting what you're doing in STATUS.md!**
 
 ### 1. Dev Server Management
 **ALWAYS clean up existing dev servers before starting a new one:**
@@ -88,6 +101,7 @@ lsof -ti:3000 -sTCP:LISTEN | xargs kill -9 2>/dev/null || true
 ```
 
 ## Reference Docs
-- [PLAN.md](.claude/PLAN.md) - Full technical plan
-- [USER_INTERACTIONS.md](.claude/USER_INTERACTIONS.md) - UX patterns
-- [WIP.md](.claude/WIP.md) - Current progress (SOURCE OF TRUTH)
+- [STATUS.md](.claude/STATUS.md) - Current project status (SOURCE OF TRUTH)
+- [HISTORY.md](.claude/HISTORY.md) - Development session log and learnings
+- [PLAN.md](.claude/PLAN.md) - Technical architecture and philosophy
+- [USER_INTERACTIONS.md](.claude/USER_INTERACTIONS.md) - UX patterns and workflows

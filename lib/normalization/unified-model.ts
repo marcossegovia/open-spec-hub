@@ -225,6 +225,18 @@ export interface UnifiedDataSchema {
 
   /** Content type */
   contentType?: string;
+
+  /** Original schema (raw format for display) */
+  originalSchema?: unknown;
+
+  /** Schema format (e.g., 'json-schema', 'avro') */
+  schemaFormat?: string;
+
+  /** Additional metadata (e.g., Avro namespace) */
+  metadata?: {
+    namespace?: string; // For Avro schemas
+    [key: string]: unknown;
+  };
 }
 
 /**
