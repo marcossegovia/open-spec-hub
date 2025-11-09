@@ -1,12 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { UnifiedOperation, UnifiedContract } from '@/lib/normalization/unified-model';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Copy, Check } from 'lucide-react';
 import { generateCodeExample, CodeLanguage } from '@/lib/utils/code-generator';
+
+// Import Prism.js for syntax highlighting
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-tomorrow.css';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-bash';
 
 interface CodeExamplesProps {
   operation: UnifiedOperation;
@@ -33,6 +40,11 @@ export default function CodeExamples({ operation, contract }: CodeExamplesProps)
 
   const code = generateCodeExample(operation, contract, selectedLanguage);
 
+  // Apply syntax highlighting when code or language changes
+  useEffect(() => {
+    Prism.highlightAll();
+  }, [code, selectedLanguage]);
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(code);
@@ -55,15 +67,9 @@ export default function CodeExamples({ operation, contract }: CodeExamplesProps)
             className="gap-2"
           >
             {copied ? (
-              <>
-                <Check className="h-4 w-4" />
-                Copied!
-              </>
+              <Check className="h-4 w-4" />
             ) : (
-              <>
-                <Copy className="h-4 w-4" />
-                Copy
-              </>
+              <Copy className="h-4 w-4" />
             )}
           </Button>
         </div>
@@ -86,7 +92,9 @@ export default function CodeExamples({ operation, contract }: CodeExamplesProps)
         {/* Code Block */}
         <div className="relative">
           <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm">
-            <code>{code}</code>
+            <code className={`language-${selectedLanguage === 'curl' ? 'bash' : selectedLanguage}`}>
+              {code}
+            </code>
           </pre>
         </div>
 

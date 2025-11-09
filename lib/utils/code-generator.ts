@@ -27,6 +27,61 @@ export function generateCodeExample(
 }
 
 /**
+ * Extract parameter example values from operation responses
+ */
+function extractParameterExample(operation: UnifiedOperation, paramName: string): string {
+  // Check if parameter has a defined example
+  const paramDef = operation.parameters.find(p => p.name === paramName);
+  if (paramDef?.example) {
+    return String(paramDef.example);
+  }
+
+  // Extract examples from response schemas based on common patterns
+  if (operation.output && operation.output.length > 0) {
+    for (const output of operation.output) {
+      if (output.example) {
+        // Look for matching ID patterns in response examples
+        const exampleStr = JSON.stringify(output.example);
+        
+        // Common parameter patterns and their example values
+        const patterns: Record<string, RegExp> = {
+          'productId': /"productId":\s*"([^"]+)"/,
+          'userId': /"userId":\s*"([^"]+)"/,
+          'orderId': /"orderId":\s*"([^"]+)"/,
+          'id': /"id":\s*"([^"]+)"/
+        };
+
+        for (const [patternName, regex] of Object.entries(patterns)) {
+          if (paramName === patternName || paramName.includes(patternName)) {
+            const match = exampleStr.match(regex);
+            if (match && match[1]) {
+              return match[1];
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Fallback to sensible defaults based on parameter name and type
+  const paramType = paramDef?.type || 'string';
+  const paramNameLower = paramName.toLowerCase();
+  
+  if (paramNameLower.includes('id')) {
+    if (paramType === 'string' && paramDef?.format === 'uuid') {
+      return '123e4567-e89b-12d3-a456-426614174000';
+    }
+    return '123';
+  }
+  
+  if (paramNameLower.includes('page')) return '1';
+  if (paramNameLower.includes('limit')) return '20';
+  if (paramNameLower.includes('query')) return 'search';
+  
+  return `{${paramName}}`;
+}
+
+/**
  * Generate REST API code examples
  */
 function generateRESTExample(
@@ -40,9 +95,9 @@ function generateRESTExample(
   const fullUrl = `${serverUrl}${path}`;
 
   // Replace path parameters with example values
-  const urlWithParams = fullUrl.replace(/\{([^}]+)\}/g, (_, param) => {
+  const urlWithParams = fullUrl.replace(/\{([^}]+)\}/g, (_, param: string) => {
     const paramDef = operation.parameters.find(p => p.name === param);
-    return paramDef?.example || `{${param}}`;
+    return extractParameterExample(operation, param);
   });
 
   switch (language) {

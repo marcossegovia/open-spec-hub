@@ -221,8 +221,9 @@ function OperationItem({
           </div>
         </div>
         <Badge
-          variant={selected ? 'secondary' : 'outline'}
-          className="text-xs flex-shrink-0"
+          className={`text-xs flex-shrink-0 text-white ${
+            selected ? 'bg-gray-500' : actionTypeColors[operation.actionType]
+          }`}
         >
           {operation.actionType}
         </Badge>
