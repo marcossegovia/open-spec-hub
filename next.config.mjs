@@ -4,8 +4,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: '/open-spec-hub',
-  assetPrefix: '/open-spec-hub/',
+  basePath: '/open-spec-hub/demo',
+  assetPrefix: '/open-spec-hub/demo/',
   trailingSlash: true,
 };
 

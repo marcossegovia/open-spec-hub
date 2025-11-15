@@ -9,7 +9,8 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node build-pages.mjs",
+    "build:demo": "next build",
     "start": "next start",
     "lint": "next lint",
     "test": "playwright test",

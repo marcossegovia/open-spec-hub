@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Spec Hub - Unified API Documentation Platform</title>
+  <meta name="description" content="Stop juggling multiple API documentation tools. Open Spec Hub unifies REST, AsyncAPI, and GraphQL specs into a single, elegant interface.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Work+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --color-bg: #0a0e17;
+      --color-surface: #151b2b;
+      --color-text: #e8edf4;
+      --color-text-dim: #8b95a8;
+      --color-rest: #3b82f6;
+      --color-event: #a855f7;
+      --color-accent: #06b6d4;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Work Sans', sans-serif;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Animated grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(59, 130, 246, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168, 85, 247, 0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+      animation: gridPulse 8s ease-in-out infinite;
+    }
+
+    @keyframes gridPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* Gradient orbs */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 25%, rgba(59, 130, 246, 0.2) 0%, transparent 40%),
+        radial-gradient(circle at 85% 75%, rgba(168, 85, 247, 0.2) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+      animation: orbFloat 20s ease-in-out infinite;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+      }
+      33% {
+        transform: translate(20px, -30px) scale(1.1);
+      }
+      66% {
+        transform: translate(-20px, 20px) scale(0.9);
+      }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Header */
+    header {
+      padding: 2rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 14, 23, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: var(--font-mono);
+      font-size: 1.125rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-symbol {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--color-rest), var(--color-event));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 10rem 0 8rem;
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .hero-content {
+      max-width: 600px;
+    }
+
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-accent);
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 2rem;
+      animation: fadeSlideDown 0.8s ease-out;
+    }
+
+    h1 {
+      font-family: var(--font-sans);
+      font-size: clamp(2.75rem, 7vw, 5rem);
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      animation: fadeSlideDown 0.8s ease-out 0.1s backwards;
+    }
+
+    .highlight {
+      background: linear-gradient(135deg, var(--color-rest) 0%, var(--color-event) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero-text {
+      font-size: 1.25rem;
+      color: var(--color-text-dim);
+      line-height: 1.7;
+      margin-bottom: 3rem;
+      animation: fadeSlideDown 0.8s ease-out 0.2s backwards;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeSlideDown 0.8s ease-out 0.3s backwards;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .btn:hover::before {
+      opacity: 1;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--color-rest), var(--color-event));
+      color: white;
+      border: none;
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--color-text);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+    }
+
+    .btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hero Visual */
+    .hero-visual {
+      position: relative;
+      animation: fadeSlideLeft 0.8s ease-out 0.4s backwards;
+    }
+
+    .code-window {
+      background: var(--color-surface);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    .window-header {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .window-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .window-dot:nth-child(1) { background: #ff5f57; }
+    .window-dot:nth-child(2) { background: #febc2e; }
+    .window-dot:nth-child(3) { background: #28c840; }
+
+    .code-content {
+      padding: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      line-height: 1.8;
+    }
+
+    .code-line {
+      display: block;
+      padding: 0.1rem 0;
+    }
+
+    .code-comment { color: var(--color-text-dim); }
+    .code-keyword { color: var(--color-rest); }
+    .code-string { color: var(--color-event); }
+    .code-function { color: var(--color-accent); }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      padding: 3rem 0;
+      margin-top: 4rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      animation: fadeSlideUp 0.8s ease-out 0.5s backwards;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: var(--font-mono);
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--color-rest), var(--color-event));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      color: var(--color-text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 500;
+    }
+
+    /* Features */
+    .features {
+      padding: 8rem 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(21, 27, 43, 0.5) 100%);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 5rem;
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-accent);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: var(--font-sans);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-subtitle {
+      font-size: 1.25rem;
+      color: var(--color-text-dim);
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.03), rgba(168, 85, 247, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 2.5rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--color-rest), var(--color-event));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-8px);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .feature-title {
+      font-family: var(--font-sans);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-desc {
+      color: var(--color-text-dim);
+      line-height: 1.7;
+      font-size: 1.05rem;
+    }
+
+    /* Protocols */
+    .protocols {
+      padding: 8rem 0;
+      background: var(--color-surface);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .protocols-list {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin-top: 3rem;
+    }
+
+    .protocol {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem 2.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .protocol:hover {
+      transform: scale(1.05);
+      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .protocol-icon {
+      font-size: 2rem;
+    }
+
+    .protocol-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .protocol-name {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.125rem;
+    }
+
+    .protocol-type {
+      font-size: 0.875rem;
+      color: var(--color-text-dim);
+    }
+
+    /* CTA */
+    .cta {
+      padding: 10rem 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.15), transparent 70%);
+      pointer-events: none;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .cta-title {
+      font-family: var(--font-sans);
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.03em;
+    }
+
+    .cta-text {
+      font-size: 1.375rem;
+      color: var(--color-text-dim);
+      margin-bottom: 3rem;
+      line-height: 1.7;
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(0, 0, 0, 0.2);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 3rem 0;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .footer-text {
+      color: var(--color-text-dim);
+      font-size: 0.95rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .footer-link {
+      color: var(--color-text-dim);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--color-accent);
+    }
+
+    /* Animations */
+    @keyframes fadeSlideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeSlideLeft {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+
+      .hero {
+        padding: 6rem 0 4rem;
+      }
+
+      .stats-bar {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 1.5rem;
+      }
+
+      .features,
+      .protocols,
+      .cta {
+        padding: 5rem 0;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-symbol">⇄</div>
+          <span>Open Spec Hub</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div class="hero-content">
+            <span class="badge">Unified API Docs</span>
+            <h1>
+              One Platform.<br>
+              <span class="highlight">All Protocols.</span>
+            </h1>
+            <p class="hero-text">
+              Stop juggling multiple API documentation tools. Open Spec Hub unifies REST and AsyncAPI specs into a single, elegant interface.
+            </p>
+            <div class="cta-buttons">
+              <a href="https://marcossegovia.me/open-spec-hub/" class="btn btn-primary">
+                <span>View Live Demo</span>
+                <span>→</span>
+              </a>
+              <a href="https://github.com" class="btn btn-secondary">
+                <span>GitHub</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <div class="code-window">
+              <div class="window-header">
+                <div class="window-dot"></div>
+                <div class="window-dot"></div>
+                <div class="window-dot"></div>
+              </div>
+              <div class="code-content">
+                <span class="code-line"><span class="code-comment">// Unified API exploration</span></span>
+                <span class="code-line"><span class="code-keyword">const</span> hub = <span class="code-function">openSpecHub</span>({</span>
+                <span class="code-line">  <span class="code-keyword">specs:</span> [</span>
+                <span class="code-line">    <span class="code-string">'openapi.yaml'</span>,</span>
+                <span class="code-line">    <span class="code-string">'asyncapi.yaml'</span>,</span>
+                <span class="code-line">    <span class="code-string">'events.yaml'</span></span>
+                <span class="code-line">  ]</span>
+                <span class="code-line">});</span>
+                <span class="code-line"></span>
+                <span class="code-line"><span class="code-comment">// See all operations</span></span>
+                <span class="code-line">hub.<span class="code-function">getAllOperations</span>();</span>
+                <span class="code-line"><span class="code-comment">// → 9 operations unified</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-bar">
+          <div class="stat">
+            <div class="stat-value">2</div>
+            <div class="stat-label">Protocols</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">100%</div>
+            <div class="stat-label">Open Source</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">∞</div>
+            <div class="stat-label">Possibilities</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-eyebrow">Features</div>
+          <h2 class="section-title">Built for Modern APIs</h2>
+          <p class="section-subtitle">
+            Designed from the ground up to handle the complexity of modern distributed systems
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature reveal">
+            <span class="feature-icon">🔷</span>
+            <h3 class="feature-title">Protocol Agnostic</h3>
+            <p class="feature-desc">
+              Seamlessly mix REST endpoints and async message channels. One unified view for all your API contracts.
+            </p>
+          </div>
+
+          <div class="feature reveal">
+            <span class="feature-icon">⇉</span>
+            <h3 class="feature-title">Smart Organization</h3>
+            <p class="feature-desc">
+              Automatically classify by communication pattern (request-response vs publish-subscribe), category, or custom tags.
+            </p>
+          </div>
+
+          <div class="feature reveal">
+            <span class="feature-icon">🔍</span>
+            <h3 class="feature-title">Powerful Search</h3>
+            <p class="feature-desc">
+              Find operations instantly across all specs. Filter by protocol, pattern, tags, or search through names and descriptions.
+            </p>
+          </div>
+
+          <div class="feature reveal">
+            <span class="feature-icon">💻</span>
+            <h3 class="feature-title">Code Generation</h3>
+            <p class="feature-desc">
+              Get instant code snippets in JavaScript, Python, and cURL. Copy, paste, and integrate in seconds.
+            </p>
+          </div>
+
+          <div class="feature reveal">
+            <span class="feature-icon">🎨</span>
+            <h3 class="feature-title">Beautiful UI</h3>
+            <p class="feature-desc">
+              Clean, modern interface with dark mode support. Built with Next.js and TypeScript for blazing fast performance.
+            </p>
+          </div>
+
+          <div class="feature reveal">
+            <span class="feature-icon">⚡</span>
+            <h3 class="feature-title">Lightning Fast</h3>
+            <p class="feature-desc">
+              Parse and render hundreds of operations in milliseconds. Real-time search and filtering with zero lag.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="protocols">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-eyebrow">Supported</div>
+          <h2 class="section-title">Works With Your Stack</h2>
+        </div>
+
+        <div class="protocols-list">
+          <div class="protocol reveal">
+            <span class="protocol-icon">🔷</span>
+            <div class="protocol-info">
+              <div class="protocol-name">OpenAPI</div>
+              <div class="protocol-type">REST APIs</div>
+            </div>
+          </div>
+
+          <div class="protocol reveal">
+            <span class="protocol-icon">🟣</span>
+            <div class="protocol-info">
+              <div class="protocol-name">AsyncAPI</div>
+              <div class="protocol-type">Event-Driven</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="container">
+        <div class="cta-content">
+          <h2 class="cta-title">
+            Ready to Unify<br>Your API Docs?
+          </h2>
+          <p class="cta-text">
+            Experience the future of API documentation. Explore our interactive demo with real OpenAPI and AsyncAPI specs.
+          </p>
+          <a href="https://marcossegovia.me/open-spec-hub/" class="btn btn-primary">
+            <span>Launch Demo</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-text">
+          Open Spec Hub - Unified API Documentation Platform
+        </div>
+        <div class="footer-links">
+          <a href="https://marcossegovia.me/open-spec-hub/" class="footer-link">Demo</a>
+          <a href="https://github.com" class="footer-link">GitHub</a>
+          <a href="https://github.com" class="footer-link">Docs</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observerOptions = {
+      threshold: 0.15,
+      rootMargin: '0px 0px -80px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Add smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
