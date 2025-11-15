@@ -546,6 +546,14 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
     }
 
     .footer-text {
@@ -568,6 +576,55 @@
 
     .footer-link:hover {
       color: var(--color-accent);
+    }
+
+    .footer-credit {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .terminal-prompt {
+      color: var(--color-rest);
+      font-weight: 700;
+    }
+
+    .terminal-command {
+      color: var(--color-text-dim);
+    }
+
+    .terminal-arrow {
+      color: var(--color-event);
+    }
+
+    .author-link {
+      color: var(--color-accent);
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .author-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--color-rest), var(--color-event));
+      transition: width 0.3s ease;
+    }
+
+    .author-link:hover {
+      color: var(--color-rest);
+    }
+
+    .author-link:hover::after {
+      width: 100%;
     }
 
     /* Animations */
@@ -686,11 +743,11 @@
               Stop juggling multiple API documentation tools. Open Spec Hub unifies REST and AsyncAPI specs into a single, elegant interface.
             </p>
             <div class="cta-buttons">
-              <a href="https://marcossegovia.me/open-spec-hub/" class="btn btn-primary">
+              <a href="https://marcossegovia.me/open-spec-hub/demo/" class="btn btn-primary">
                 <span>View Live Demo</span>
                 <span>→</span>
               </a>
-              <a href="https://github.com" class="btn btn-secondary">
+              <a href="https://github.com/marcossegovia/open-spec-hub" class="btn btn-secondary">
                 <span>GitHub</span>
               </a>
             </div>
@@ -836,7 +893,7 @@
           <p class="cta-text">
             Experience the future of API documentation. Explore our interactive demo with real OpenAPI and AsyncAPI specs.
           </p>
-          <a href="https://marcossegovia.me/open-spec-hub/" class="btn btn-primary">
+          <a href="https://marcossegovia.me/open-spec-hub/demo/" class="btn btn-primary">
             <span>Launch Demo</span>
             <span>→</span>
           </a>
@@ -848,13 +905,21 @@
   <footer>
     <div class="container">
       <div class="footer-content">
-        <div class="footer-text">
-          Open Spec Hub - Unified API Documentation Platform
+        <div class="footer-left">
+          <div class="footer-text">
+            Open Spec Hub - Unified API Documentation Platform
+          </div>
+          <div class="footer-credit">
+            <span class="terminal-prompt">$</span>
+            <span class="terminal-command">whoami</span>
+            <span class="terminal-arrow">→</span>
+            <a href="https://marcossegovia.me/" class="author-link" target="_blank" rel="noopener noreferrer">@marcossegovia</a>
+          </div>
         </div>
         <div class="footer-links">
-          <a href="https://marcossegovia.me/open-spec-hub/" class="footer-link">Demo</a>
-          <a href="https://github.com" class="footer-link">GitHub</a>
-          <a href="https://github.com" class="footer-link">Docs</a>
+          <a href="https://marcossegovia.me/open-spec-hub/demo/" class="footer-link">Demo</a>
+          <a href="https://github.com/marcossegovia/open-spec-hub" class="footer-link">GitHub</a>
+          <a href="https://github.com/marcossegovia/open-spec-hub#readme" class="footer-link">Docs</a>
         </div>
       </div>
     </div>

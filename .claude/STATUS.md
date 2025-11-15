@@ -1,30 +1,31 @@
 # Project Status
 
-**Last Updated**: 2025-11-09
-**Current Phase**: Phase 4 - Core Features Complete, Medium Priority Pending
+**Last Updated**: 2025-11-15
+**Current Phase**: Phase 4 - Core Features Complete, Ready for Deployment
 
 ---
 
 ## 🎯 RIGHT NOW
 
-**Working On**: Landing Page Creation
+**Working On**: Dual GitHub Pages Deployment
 **Status**: ✅ COMPLETE
-**Last Completed**: 2025-11-11 - Standalone Landing Page
+**Last Completed**: 2025-11-15 15:00 - Dual GitHub Pages Deployment Setup
 
 **Current Request**:
-> "Please build me a simple landing page that showcases this SaaS. Try to use as little dependencies as possible."
+> "I would like to put the update the current repository so that the ./out goes to /open-spec-hub/demo and the this new @index.html goes to /open-spec-hub"
 
 **Completed Tasks**:
-- ✅ Created standalone index.html landing page (pure HTML/CSS, ~350 lines)
-- ✅ Hero section with gradient background and CTA to demo
-- ✅ Key features showcase (4 features with cards)
-- ✅ Modern gradient/vibrant design (purple/blue/pink)
-- ✅ Fully responsive (mobile-first design)
-- ✅ Zero dependencies (no external CSS/JS)
-- ✅ Smooth animations and hover effects
-- ✅ Links to demo and GitHub
+- ✅ Created distinctive landing page with "Technical Clarity" design (dark theme, ~900 lines)
+- ✅ Updated next.config.mjs basePath: `/open-spec-hub` → `/open-spec-hub/demo`
+- ✅ Created build-pages.mjs automation script for dual deployment structure
+- ✅ Updated package.json build scripts (build, build:demo)
+- ✅ Verified GitHub Actions workflow compatibility
+- ✅ Successfully tested build process with correct dual-page structure
+- ✅ Removed GraphQL and KafkaJS references (OpenAPI + AsyncAPI only)
 
-**Deliverable**: `index.html` at project root
+**Deliverables**:
+- Landing page: `/open-spec-hub/` (from `index.html`)
+- Demo app: `/open-spec-hub/demo/` (from `out/demo/`)
 
 ---
 
@@ -56,7 +57,7 @@
 ### Phase 4: Core Features
 - Static Site Generation (SSG) configured
 - Operation detail pages with routing
-- Code examples (JavaScript, Python, cURL, KafkaJS)
+- Code examples (JavaScript, Python, cURL)
 - Copy-to-clipboard functionality
 - Sidebar integration (3 grouping modes: Contract, Category, Pattern)
 - Example request/response display with copy buttons
@@ -74,13 +75,19 @@
 - HISTORY.md: Session log with learnings (~208 lines)
 - PLAN.md: Technical architecture (~149 lines, condensed from 591)
 
-### Marketing & Landing
-- Standalone landing page (index.html) with zero dependencies
-- Modern gradient design (purple/blue/pink vibes)
-- Hero section with CTA to live demo
-- 4 feature cards with animations
-- Fully responsive mobile-first design
-- Links to demo (https://marcossegovia.me/open-spec-hub/) and GitHub
+### Marketing & Deployment
+- **Landing Page**: "Technical Clarity" design (dark theme #0a0e17, JetBrains Mono + Work Sans)
+  - Animated grid background with gradient orbs
+  - Hero section with code window visual
+  - 6 feature cards with hover effects
+  - Protocol badges (OpenAPI, AsyncAPI)
+  - Scroll reveal animations
+  - Minimal dependencies (2 Google Fonts only)
+- **Dual GitHub Pages Structure**:
+  - Landing page at `/open-spec-hub/` (index.html)
+  - Demo app at `/open-spec-hub/demo/` (Next.js build)
+  - Automated build script (build-pages.mjs)
+  - GitHub Actions deployment workflow (deploys on push to main)
 
 ---
 
@@ -120,9 +127,17 @@
 
 **Build & Test:**
 ```bash
-npm run build        # Build for production
+npm run build        # Build for production (creates dual GitHub Pages structure)
+npm run build:demo   # Build only Next.js demo app
 npm test            # Run E2E tests
 npm run test:ui     # Run tests with UI
+```
+
+**Deploy:**
+```bash
+git push origin main  # Triggers GitHub Actions deployment
+# → Landing: https://marcossegovia.me/open-spec-hub/
+# → Demo: https://marcossegovia.me/open-spec-hub/demo/
 ```
 
 ---
