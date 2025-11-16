@@ -4,7 +4,7 @@
 
 ## 🚀 Live Demo
 
-**https://marcossegovia.me/open-spec-hub**
+**https://marcossegovia.me/open-spec-hub/demo/**
 
 See it in action with our example page featuring both REST APIs and AsyncAPI event streams.
 
