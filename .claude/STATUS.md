@@ -136,8 +136,8 @@ npm run test:ui     # Run tests with UI
 **Deploy:**
 ```bash
 git push origin main  # Triggers GitHub Actions deployment
-# → Landing: https://marcossegovia.me/open-spec-hub/
-# → Demo: https://marcossegovia.me/open-spec-hub/demo/
+# → Landing: https://msegovia.dev/open-spec-hub/
+# → Demo: https://msegovia.dev/open-spec-hub/demo/
 ```
 
 ---

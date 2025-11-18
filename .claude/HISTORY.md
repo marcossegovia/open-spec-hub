@@ -53,6 +53,38 @@
 
 ## 📅 Session Log (Most Recent First)
 
+### 2025-11-18 10:30 - Domain and GitHub Migration
+**Session Focus**: Update all references from old domain/GitHub to new ones
+**Customer Request**: "the current repository is configured to expose the project to github pages under marcossegovia.me/open-spec-hub, now I have adquited a new domain and instead it should be to msegovia.dev/open-spec-hub" + "all the references to github.com/marcossegovia should be now to github.com/msegoviadev"
+**Status**: ✅ COMPLETE
+
+**Achievements**:
+- ✅ Updated domain from `marcossegovia.me` to `msegovia.dev` across all files
+- ✅ Updated GitHub organization from `marcossegovia` to `msegoviadev` across all files
+
+**Files Modified**:
+- `package.json` - homepage URL and repository URL
+- `index.html` - 4 domain URLs (demo links x3, author link) + 3 GitHub URLs
+- `README.md` - 2 domain URLs + 4 GitHub URLs (clone, repository, issues, author profile)
+- `.claude/STATUS.md` - 2 domain URLs
+- `.claude/HISTORY.md` - 3 domain URLs + 1 GitHub URL
+
+**URL Changes**:
+| Old | New |
+|-----|-----|
+| `marcossegovia.me` | `msegovia.dev` |
+| `github.com/marcossegovia` | `github.com/msegoviadev` |
+
+**Note**: `next.config.mjs` unchanged (only contains basePath without domain)
+
+**Duration**: 10 minutes
+
+**Next Steps**:
+- Configure custom domain in GitHub Pages settings (Settings > Pages > Custom domain → `msegovia.dev`)
+- Transfer/fork repository to new GitHub organization if needed
+
+---
+
 ### 2025-11-15 15:00 - Dual GitHub Pages Deployment Setup + Landing Page Polish
 **Session Focus**: Restructure repository for dual GitHub Pages deployment (landing page + demo app)
 **Customer Request**: "I would like to put the update the current repository so that the ./out goes to /open-spec-hub/demo and the this new @index.html goes to /open-spec-hub"
@@ -93,10 +125,10 @@
   ```
 
 **Link Structure**:
-- Landing page: `https://marcossegovia.me/open-spec-hub/`
-- Demo app: `https://marcossegovia.me/open-spec-hub/demo/`
-- GitHub repo: `https://github.com/marcossegovia/open-spec-hub`
-- Author site: `https://marcossegovia.me/`
+- Landing page: `https://msegovia.dev/open-spec-hub/`
+- Demo app: `https://msegovia.dev/open-spec-hub/demo/`
+- GitHub repo: `https://github.com/msegoviadev/open-spec-hub`
+- Author site: `https://msegovia.dev/`
 
 **Testing Results**:
 - ✅ Build completes successfully with correct structure

@@ -2,10 +2,10 @@
   "name": "open-spec-hub",
   "version": "1.0.0",
   "description": "Unified API Contract Documentation Platform",
-  "homepage": "https://marcossegovia.me/open-spec-hub",
+  "homepage": "https://msegovia.dev/open-spec-hub",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/marcossegovia/open-spec-hub.git"
+    "url": "git+https://github.com/msegoviadev/open-spec-hub.git"
   },
   "scripts": {
     "dev": "next dev",

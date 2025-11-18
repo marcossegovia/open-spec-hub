@@ -4,7 +4,7 @@
 
 ## 🚀 Live Demo
 
-**https://marcossegovia.me/open-spec-hub/demo/**
+**https://msegovia.dev/open-spec-hub/demo/**
 
 See it in action with our example page featuring both REST APIs and AsyncAPI event streams.
 
@@ -53,7 +53,7 @@ We translate different API protocols into a common conceptual model:
 
 ```bash
 # Clone the repository
-git clone https://github.com/marcossegovia/open-spec-hub.git
+git clone https://github.com/msegoviadev/open-spec-hub.git
 cd open-spec-hub
 
 # Install dependencies
@@ -170,9 +170,9 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 🔗 Links
 
-- **Live Demo**: https://marcossegovia.me/open-spec-hub
-- **Repository**: https://github.com/marcossegovia/open-spec-hub
-- **Issues**: https://github.com/marcossegovia/open-spec-hub/issues
+- **Live Demo**: https://msegovia.dev/open-spec-hub
+- **Repository**: https://github.com/msegoviadev/open-spec-hub
+- **Issues**: https://github.com/msegoviadev/open-spec-hub/issues
 
 ---
 
@@ -180,6 +180,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 **⭐ Star this repo if it helped you!**
 
-Made with ❤️ by [Marcos Segovia](https://github.com/marcossegovia)
+Made with ❤️ by [Marcos Segovia](https://github.com/msegoviadev)
 
 </div>
